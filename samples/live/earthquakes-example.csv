@@ -1,0 +1,321 @@
+date,time_utc,magnitude,depth_km,place,region,latitude,longitude,tsunami_alert
+2026-11-04,22:17,4.2,285.5,"48 km SW of Villa Vista, Alaska",Alaska,-2.21,176.46,no
+2026-11-04,21:25,2.6,81.5,"76 km N of Mount Hope, Turkey",Turkey,34.28,-93.34,no
+2026-11-04,21:06,4.1,579.5,"115 km SSE of Kota Vista, Hawaii",Hawaii,61.39,-133.28,no
+2026-11-04,21:05,2.6,241.1,"15 km SW of Kota Hope, Chile",Chile,-25.71,-22.53,no
+2026-11-04,20:46,4.3,33.6,"56 km WNW of Mount Alto, Iceland",Iceland,-38.33,85.87,no
+2026-11-04,20:20,6.4,86.1,"6 km WNW of Villa Baru, Papua New Guinea",Papua New Guinea,57.53,-70.46,no
+2026-11-04,20:14,4.6,213.8,"133 km NE of Villa Baru, Chile",Chile,43.7,103.55,no
+2026-11-04,19:40,4.2,565.7,"7 km SW of Port Baru, CA",CA,11.88,164.42,no
+2026-11-04,19:32,3.5,32.7,"108 km SW of San Baru, Mexico",Mexico,-7.04,168.84,no
+2026-11-04,19:28,3.2,14.8,"45 km SW of Mount Vista, Tonga",Tonga,13.88,-54.34,no
+2026-11-04,19:18,2.6,320.0,"67 km S of Villa Vista, CA",CA,40.56,74.69,no
+2026-11-04,19:10,3.1,3.3,"76 km S of Villa Vista, Japan",Japan,22.88,116.67,no
+2026-11-04,18:11,3.0,44.4,"32 km W of Kota Baru, Fiji",Fiji,-38.26,57.64,no
+2026-11-04,17:51,2.7,229.9,"42 km NE of Villa Rosa, New Zealand",New Zealand,-5.72,-24.42,no
+2026-11-04,17:43,3.6,415.0,"38 km WNW of Villa Rosa, Mexico",Mexico,-7.9,152.32,no
+2026-11-04,17:38,2.7,21.7,"136 km E of Kota Hope, New Zealand",New Zealand,-17.18,-53.27,no
+2026-11-04,17:17,4.1,296.0,"49 km W of Kota Rosa, Alaska",Alaska,33.17,81.84,no
+2026-11-04,17:00,2.5,3.2,"91 km WNW of San Hope, Chile",Chile,26.97,-17.64,no
+2026-11-04,16:08,3.4,613.8,"130 km N of Kota Baru, Indonesia",Indonesia,29.68,-117.42,no
+2026-11-04,15:45,3.2,470.6,"88 km W of Port Hope, CA",CA,5.58,11.12,no
+2026-11-04,15:31,2.6,19.8,"94 km WNW of San Alto, Turkey",Turkey,-39.91,-66.74,no
+2026-11-04,15:13,2.5,25.1,"52 km S of Villa Alto, CA",CA,-12.93,92.59,no
+2026-11-04,15:09,4.5,183.1,"30 km E of Mount Rosa, Mexico",Mexico,-14.21,13.84,no
+2026-11-04,14:45,2.6,468.6,"37 km NE of Villa Hope, New Zealand",New Zealand,57.39,159.78,no
+2026-11-04,14:12,2.8,330.8,"119 km SSE of Mount Rosa, Peru",Peru,11.99,2.64,no
+2026-11-04,13:42,3.9,9.3,"129 km E of Villa Vista, Papua New Guinea",Papua New Guinea,2.14,-117.73,no
+2026-11-04,13:04,4.3,551.6,"46 km N of Mount Vista, CA",CA,39.49,151.03,no
+2026-11-04,12:57,2.7,12.2,"47 km S of Port Alto, Philippines",Philippines,-40.52,34.7,no
+2026-11-04,12:41,2.6,394.9,"62 km E of Mount Alto, Indonesia",Indonesia,-34.18,-176.29,no
+2026-11-04,12:38,4.2,508.2,"114 km E of Villa Baru, Peru",Peru,-29.11,159.29,no
+2026-11-04,12:11,3.0,105.5,"59 km NE of Port Vista, Philippines",Philippines,37.79,95.98,no
+2026-11-04,11:25,3.5,21.7,"3 km N of Mount Alto, Tonga",Tonga,18.99,-142.72,no
+2026-11-04,11:16,2.6,421.1,"140 km NE of Kota Baru, Hawaii",Hawaii,-19.38,-167.72,no
+2026-11-04,11:02,3.1,255.0,"91 km WNW of Mount Hope, Iceland",Iceland,-6.76,-57.56,no
+2026-11-04,09:51,3.1,41.6,"80 km W of Villa Baru, Indonesia",Indonesia,-27.22,-167.54,no
+2026-11-04,09:37,3.4,450.2,"112 km SSE of Kota Vista, Japan",Japan,38.98,-126.86,no
+2026-11-04,09:30,3.0,587.1,"68 km S of San Hope, Iceland",Iceland,45.33,-166.73,no
+2026-11-04,09:17,3.1,94.7,"100 km SSE of Port Hope, Indonesia",Indonesia,26.8,133.05,no
+2026-11-04,07:19,2.5,161.6,"131 km NE of Villa Vista, Mexico",Mexico,58.92,4.24,no
+2026-11-04,06:12,2.9,258.5,"45 km N of Villa Vista, Nevada",Nevada,50.39,-147.96,no
+2026-11-04,05:17,2.6,31.1,"130 km W of Port Vista, Greece",Greece,8.3,-155.79,no
+2026-11-04,04:58,4.0,194.0,"128 km SSE of Kota Vista, Japan",Japan,38.39,48.46,no
+2026-11-04,04:56,3.2,34.6,"134 km SW of Villa Rosa, Nevada",Nevada,37.07,53.91,no
+2026-11-04,04:35,4.3,12.0,"72 km SW of Mount Baru, Mexico",Mexico,-4.5,-177.72,no
+2026-11-04,04:19,5.8,32.6,"32 km WNW of Villa Baru, Japan",Japan,-25.05,167.39,no
+2026-11-04,03:29,4.3,386.9,"71 km SSE of Port Vista, Tonga",Tonga,-14.55,174.71,no
+2026-11-04,02:08,2.6,11.9,"25 km WNW of Port Vista, Indonesia",Indonesia,43.58,136.96,no
+2026-11-04,01:08,7.4,548.9,"47 km SW of Kota Baru, Indonesia",Indonesia,25.65,-115.98,yes
+2026-11-04,00:20,2.6,113.0,"126 km SSE of Villa Alto, Puerto Rico",Puerto Rico,60.32,68.44,no
+2026-11-04,00:12,3.1,337.0,"38 km SSE of Kota Baru, CA",CA,0.51,-125.2,no
+2026-11-03,23:12,3.5,464.5,"131 km SW of Villa Hope, Japan",Japan,6.58,-76.1,no
+2026-11-03,22:54,3.0,2.5,"116 km SW of Mount Vista, Peru",Peru,-21.39,160.8,no
+2026-11-03,22:16,2.9,309.1,"39 km W of Villa Rosa, Greece",Greece,17.74,42.11,no
+2026-11-03,21:04,3.0,31.7,"129 km E of Kota Alto, Mexico",Mexico,16.24,-44.84,no
+2026-11-03,20:40,3.0,31.6,"121 km N of San Vista, Chile",Chile,-7.4,-164.62,no
+2026-11-03,19:49,3.3,249.3,"24 km NE of Kota Rosa, Peru",Peru,-0.71,97.86,no
+2026-11-03,19:34,3.6,18.2,"4 km WNW of Mount Vista, Turkey",Turkey,9.96,-164.44,no
+2026-11-03,18:45,3.0,31.7,"53 km SW of Villa Baru, Fiji",Fiji,34.01,-91.5,no
+2026-11-03,18:22,4.6,15.5,"137 km NE of Mount Hope, Japan",Japan,30.04,63.55,no
+2026-11-03,18:14,3.3,16.1,"124 km SSE of Villa Alto, Indonesia",Indonesia,-2.68,-12.39,no
+2026-11-03,17:55,3.6,72.8,"114 km WNW of Mount Baru, Philippines",Philippines,7.83,15.3,no
+2026-11-03,17:51,2.9,27.3,"103 km SSE of San Baru, Greece",Greece,-28.82,155.6,no
+2026-11-03,17:36,2.7,332.3,"60 km N of Kota Hope, Mexico",Mexico,-4.58,-72.8,no
+2026-11-03,17:02,2.7,555.3,"129 km SSE of Villa Vista, Indonesia",Indonesia,34.85,-154.33,no
+2026-11-03,16:50,3.0,254.2,"65 km SSE of Port Hope, CA",CA,30.06,-155.92,no
+2026-11-03,16:38,4.1,6.4,"80 km WNW of San Baru, Alaska",Alaska,-39.35,94.71,no
+2026-11-03,16:34,3.0,244.9,"56 km W of San Baru, CA",CA,49.43,-134.36,no
+2026-11-03,16:02,4.1,8.3,"35 km N of Mount Vista, Tonga",Tonga,46.07,111.56,no
+2026-11-03,15:42,2.8,557.5,"11 km S of Villa Hope, Iceland",Iceland,-21.15,71.73,no
+2026-11-03,15:32,3.1,22.5,"108 km N of Kota Alto, Tonga",Tonga,-16.77,-84.54,no
+2026-11-03,14:48,2.7,233.4,"53 km W of Mount Vista, Nevada",Nevada,-17.58,-16.99,no
+2026-11-03,14:41,3.1,474.8,"29 km NE of Port Vista, Turkey",Turkey,-23.9,-57.87,no
+2026-11-03,14:40,2.6,13.1,"36 km S of Villa Hope, Puerto Rico",Puerto Rico,-42.69,-158.21,no
+2026-11-03,14:24,3.5,19.3,"7 km E of San Alto, Peru",Peru,23.81,-30.48,no
+2026-11-03,12:34,3.4,10.8,"26 km SW of Kota Hope, Philippines",Philippines,24.8,177.71,no
+2026-11-03,11:43,2.8,10.2,"106 km SW of Port Rosa, Turkey",Turkey,2.21,-30.38,no
+2026-11-03,11:35,3.0,33.5,"27 km SW of Mount Hope, Iceland",Iceland,51.56,-81.3,no
+2026-11-03,11:28,3.9,372.9,"32 km SW of Mount Alto, New Zealand",New Zealand,15.03,-62.61,no
+2026-11-03,08:10,4.2,34.0,"68 km SW of Kota Alto, Chile",Chile,46.6,159.43,no
+2026-11-03,08:08,2.7,109.4,"56 km SSE of Villa Vista, Nevada",Nevada,-28.75,113.97,no
+2026-11-03,07:55,2.6,25.2,"16 km NE of Mount Alto, Turkey",Turkey,-0.21,142.72,no
+2026-11-03,07:29,4.2,202.7,"12 km SSE of San Hope, Chile",Chile,18.74,-92.01,no
+2026-11-03,07:17,2.9,373.2,"6 km S of Port Baru, Tonga",Tonga,51.49,-42.04,no
+2026-11-03,05:40,2.8,33.1,"53 km W of San Baru, Iceland",Iceland,25.6,-62.72,no
+2026-11-03,05:15,3.6,433.9,"125 km E of Kota Hope, Turkey",Turkey,17.97,-19.33,no
+2026-11-03,05:05,3.0,5.6,"27 km W of San Baru, New Zealand",New Zealand,-6.44,54.85,no
+2026-11-03,04:22,2.8,30.8,"83 km NE of San Rosa, Tonga",Tonga,24.6,14.66,no
+2026-11-03,04:11,2.7,139.7,"9 km SW of San Alto, Hawaii",Hawaii,24.06,74.95,no
+2026-11-03,03:20,3.8,505.0,"130 km SW of Villa Rosa, Iceland",Iceland,-40.8,-66.84,no
+2026-11-03,03:18,4.2,117.0,"53 km N of Kota Baru, Mexico",Mexico,-31.97,-105.25,no
+2026-11-03,01:01,2.6,618.7,"109 km N of Villa Alto, Nevada",Nevada,-39.16,-169.57,no
+2026-11-03,00:56,2.7,64.2,"23 km NE of Mount Alto, Philippines",Philippines,-32.98,111.11,no
+2026-11-03,00:37,3.1,30.2,"114 km W of Mount Hope, Nevada",Nevada,40.95,74.38,no
+2026-11-03,00:06,2.8,546.2,"109 km W of Kota Vista, Alaska",Alaska,46.08,-91.54,no
+2026-11-02,23:27,3.3,28.0,"121 km W of Villa Baru, Turkey",Turkey,-28.88,178.17,no
+2026-11-02,22:54,3.5,527.8,"64 km N of Port Rosa, Chile",Chile,-39.14,82.34,no
+2026-11-02,20:55,4.1,101.2,"64 km SSE of Kota Baru, Nevada",Nevada,44.46,30.87,no
+2026-11-02,19:41,2.6,404.9,"98 km S of Villa Baru, Papua New Guinea",Papua New Guinea,-44.71,-73.62,no
+2026-11-02,19:26,4.0,5.3,"89 km S of Port Alto, Puerto Rico",Puerto Rico,-39.23,-6.07,no
+2026-11-02,19:13,3.1,217.5,"70 km W of Mount Alto, CA",CA,-0.68,43.35,no
+2026-11-02,18:45,3.0,484.5,"134 km NE of Port Hope, Tonga",Tonga,52.29,69.71,no
+2026-11-02,17:54,5.0,107.1,"135 km E of Kota Vista, Fiji",Fiji,29.23,70.89,no
+2026-11-02,17:49,3.8,4.2,"57 km NE of Villa Vista, Alaska",Alaska,-13.64,40.39,no
+2026-11-02,17:48,3.4,26.7,"100 km E of Mount Hope, Chile",Chile,27.6,43.24,no
+2026-11-02,17:28,3.4,102.5,"139 km E of Villa Hope, Hawaii",Hawaii,35.13,157.24,no
+2026-11-02,17:03,3.8,467.9,"132 km W of Kota Alto, Puerto Rico",Puerto Rico,-41.28,-167.17,no
+2026-11-02,17:02,2.6,34.6,"101 km NE of Kota Rosa, Nevada",Nevada,36.29,-11.61,no
+2026-11-02,16:54,2.5,315.3,"51 km SW of San Rosa, Fiji",Fiji,-0.52,-22.85,no
+2026-11-02,15:56,2.5,32.9,"135 km SW of San Rosa, Iceland",Iceland,-10.29,-78.0,no
+2026-11-02,15:45,2.7,59.7,"133 km NE of Villa Alto, Turkey",Turkey,58.94,85.42,no
+2026-11-02,15:24,3.2,43.8,"96 km S of Mount Hope, Mexico",Mexico,48.74,-60.09,no
+2026-11-02,14:36,2.5,24.0,"72 km WNW of Port Vista, Peru",Peru,40.85,-19.84,no
+2026-11-02,14:25,3.0,316.6,"116 km E of Mount Vista, Greece",Greece,13.3,27.12,no
+2026-11-02,14:22,3.1,32.0,"21 km WNW of Port Alto, Peru",Peru,-35.9,154.67,no
+2026-11-02,14:13,4.1,29.1,"36 km SW of Port Alto, Chile",Chile,-19.65,16.23,no
+2026-11-02,13:21,3.6,588.8,"6 km E of Mount Vista, Tonga",Tonga,-24.12,-75.47,no
+2026-11-02,11:41,2.6,16.0,"104 km S of Port Rosa, Chile",Chile,41.2,-154.59,no
+2026-11-02,11:32,2.7,240.3,"22 km E of Kota Alto, Fiji",Fiji,55.07,-126.04,no
+2026-11-02,11:12,3.8,10.5,"125 km WNW of Mount Hope, Turkey",Turkey,59.69,-9.94,no
+2026-11-02,10:49,2.7,32.7,"76 km E of Port Hope, Puerto Rico",Puerto Rico,-19.99,-136.55,no
+2026-11-02,10:17,4.2,96.7,"55 km N of Mount Vista, Chile",Chile,27.98,55.59,no
+2026-11-02,09:12,2.8,378.8,"4 km E of Kota Rosa, CA",CA,12.23,60.78,no
+2026-11-02,08:52,3.6,9.7,"69 km SW of San Vista, New Zealand",New Zealand,56.13,-162.74,no
+2026-11-02,07:47,4.1,34.4,"28 km W of Villa Rosa, Iceland",Iceland,28.07,-0.82,no
+2026-11-02,07:44,2.8,6.3,"76 km NE of Port Alto, Chile",Chile,-22.17,-174.2,no
+2026-11-02,07:19,3.2,474.2,"51 km S of Villa Alto, Alaska",Alaska,-19.58,-139.2,no
+2026-11-02,06:48,3.2,11.2,"27 km S of Port Rosa, Nevada",Nevada,46.06,-176.85,no
+2026-11-02,05:44,2.9,19.4,"98 km W of Port Rosa, Philippines",Philippines,60.03,-104.67,no
+2026-11-02,04:57,4.0,27.6,"75 km S of Villa Baru, Hawaii",Hawaii,-43.26,67.67,no
+2026-11-02,04:56,3.6,18.6,"60 km E of Mount Rosa, New Zealand",New Zealand,11.94,-100.59,no
+2026-11-02,04:33,2.5,20.7,"30 km E of Kota Baru, Japan",Japan,-16.8,79.68,no
+2026-11-02,04:09,3.0,302.2,"9 km W of Port Rosa, New Zealand",New Zealand,32.64,-147.8,no
+2026-11-02,03:57,3.6,27.8,"115 km N of Mount Rosa, Japan",Japan,39.27,61.66,no
+2026-11-02,03:45,2.7,376.9,"17 km SSE of Mount Alto, Greece",Greece,46.21,41.59,no
+2026-11-02,03:25,2.7,35.0,"44 km NE of Port Alto, Chile",Chile,33.73,-26.18,no
+2026-11-02,01:48,3.4,20.3,"139 km E of San Alto, Indonesia",Indonesia,23.69,-117.49,no
+2026-11-02,00:40,2.5,16.4,"80 km N of Kota Baru, Nevada",Nevada,28.91,-163.16,no
+2026-11-02,00:01,2.6,11.8,"47 km SSE of Mount Rosa, Peru",Peru,18.22,70.22,no
+2026-11-01,22:59,2.5,32.8,"24 km E of Kota Baru, Peru",Peru,-41.96,47.72,no
+2026-11-01,22:30,3.1,4.2,"83 km S of Villa Baru, Alaska",Alaska,40.22,-59.27,no
+2026-11-01,21:09,3.2,17.2,"80 km SSE of San Alto, Japan",Japan,42.09,-51.2,no
+2026-11-01,18:20,3.0,598.4,"63 km WNW of San Baru, Nevada",Nevada,-23.27,-159.28,no
+2026-11-01,17:13,3.0,319.8,"69 km E of Mount Vista, CA",CA,11.95,71.58,no
+2026-11-01,16:36,3.2,28.3,"119 km NE of Kota Rosa, Turkey",Turkey,3.05,-3.54,no
+2026-11-01,16:22,3.7,165.4,"26 km SSE of Kota Vista, Papua New Guinea",Papua New Guinea,-35.64,9.26,no
+2026-11-01,16:18,3.1,420.8,"47 km S of Kota Rosa, Turkey",Turkey,-41.17,-48.26,no
+2026-11-01,15:59,5.9,397.3,"112 km E of Villa Vista, Hawaii",Hawaii,-19.73,-11.02,no
+2026-11-01,15:25,3.2,28.1,"47 km E of Port Alto, Papua New Guinea",Papua New Guinea,40.11,62.57,no
+2026-11-01,14:40,2.9,34.7,"91 km W of Mount Baru, Japan",Japan,32.95,73.28,no
+2026-11-01,12:56,2.6,143.1,"115 km WNW of Kota Hope, Nevada",Nevada,53.08,-143.51,no
+2026-11-01,12:05,2.7,429.0,"5 km NE of Mount Rosa, Puerto Rico",Puerto Rico,15.43,-60.96,no
+2026-11-01,11:42,4.4,85.5,"49 km NE of Mount Rosa, Alaska",Alaska,-15.01,-36.89,no
+2026-11-01,11:35,5.7,19.4,"39 km NE of Villa Alto, New Zealand",New Zealand,26.7,-80.59,no
+2026-11-01,11:08,3.8,235.1,"53 km N of San Alto, Indonesia",Indonesia,28.7,-30.49,no
+2026-11-01,08:30,2.8,66.2,"47 km N of Mount Alto, Peru",Peru,22.96,-35.62,no
+2026-11-01,08:12,3.0,18.9,"87 km NE of Villa Rosa, Indonesia",Indonesia,50.47,161.9,no
+2026-11-01,08:10,4.2,544.2,"83 km W of Port Hope, Papua New Guinea",Papua New Guinea,22.37,-7.97,no
+2026-11-01,07:55,3.2,298.5,"139 km S of San Alto, Mexico",Mexico,-17.12,96.62,no
+2026-11-01,07:01,4.3,8.6,"86 km SSE of Mount Rosa, Hawaii",Hawaii,-29.93,-83.98,no
+2026-11-01,06:48,2.7,30.2,"85 km SW of Mount Vista, Philippines",Philippines,34.24,-2.14,no
+2026-11-01,06:25,4.3,5.8,"131 km W of Mount Hope, CA",CA,27.07,59.52,no
+2026-11-01,06:12,4.3,19.4,"80 km WNW of Villa Alto, Nevada",Nevada,22.49,41.13,no
+2026-11-01,06:03,3.0,33.8,"10 km NE of Kota Hope, Hawaii",Hawaii,55.62,-153.72,no
+2026-11-01,05:53,2.8,225.7,"140 km SSE of Kota Alto, Mexico",Mexico,30.61,61.09,no
+2026-11-01,05:32,2.5,4.0,"112 km SSE of San Hope, Turkey",Turkey,59.58,109.13,no
+2026-11-01,05:13,2.5,450.9,"99 km E of Villa Alto, Papua New Guinea",Papua New Guinea,33.83,-26.84,no
+2026-11-01,05:03,3.8,326.2,"72 km SSE of Mount Rosa, Tonga",Tonga,60.46,-168.29,no
+2026-11-01,04:57,3.0,517.3,"136 km N of Villa Alto, New Zealand",New Zealand,32.03,-149.24,no
+2026-11-01,04:21,2.6,32.4,"79 km E of Villa Alto, Papua New Guinea",Papua New Guinea,-1.48,45.54,no
+2026-11-01,04:16,3.0,22.2,"46 km S of Kota Hope, Nevada",Nevada,-26.43,-104.88,no
+2026-11-01,03:53,3.2,542.1,"131 km N of San Vista, Turkey",Turkey,30.95,-40.82,no
+2026-11-01,03:29,2.9,26.4,"44 km SW of Villa Rosa, Papua New Guinea",Papua New Guinea,-33.55,-152.46,no
+2026-11-01,03:17,2.5,56.2,"46 km N of San Rosa, Japan",Japan,-8.78,-134.15,no
+2026-11-01,03:10,3.6,361.8,"94 km S of Villa Alto, Peru",Peru,35.89,-172.88,no
+2026-11-01,02:59,3.8,545.3,"91 km SW of Mount Hope, Indonesia",Indonesia,-1.43,-132.41,no
+2026-11-01,02:20,2.8,499.1,"134 km N of Port Baru, Tonga",Tonga,-43.16,-93.29,no
+2026-11-01,02:16,2.6,3.3,"77 km S of Port Rosa, CA",CA,-25.58,35.27,no
+2026-11-01,02:07,2.7,552.7,"85 km S of Kota Vista, Iceland",Iceland,30.55,-39.96,no
+2026-11-01,01:43,3.1,8.2,"47 km WNW of Kota Vista, Indonesia",Indonesia,17.83,130.87,no
+2026-11-01,01:42,2.9,560.9,"26 km W of San Baru, Philippines",Philippines,-11.1,-87.18,no
+2026-11-01,01:29,4.4,7.0,"83 km E of Kota Hope, Turkey",Turkey,61.66,64.77,no
+2026-11-01,00:12,3.1,469.7,"92 km SW of San Rosa, Turkey",Turkey,-9.07,136.13,no
+2026-11-01,00:04,3.1,76.5,"82 km E of Villa Vista, Turkey",Turkey,61.32,123.99,no
+2026-10-31,23:20,3.4,325.3,"8 km NE of Mount Baru, Peru",Peru,-25.77,112.77,no
+2026-10-31,23:07,2.8,116.1,"123 km NE of San Alto, Peru",Peru,-40.17,-111.8,no
+2026-10-31,23:03,4.2,237.7,"122 km N of Villa Hope, Puerto Rico",Puerto Rico,61.24,67.38,no
+2026-10-31,22:56,3.3,9.0,"10 km SW of San Vista, Puerto Rico",Puerto Rico,36.27,147.04,no
+2026-10-31,22:48,2.5,8.2,"79 km WNW of Mount Alto, Greece",Greece,4.72,84.79,no
+2026-10-31,22:23,3.6,388.4,"38 km SW of Villa Hope, Mexico",Mexico,29.2,-50.53,no
+2026-10-31,22:11,3.2,106.3,"35 km NE of San Rosa, Peru",Peru,8.34,79.6,no
+2026-10-31,22:07,2.6,23.7,"120 km NE of San Vista, Greece",Greece,31.09,94.14,no
+2026-10-31,21:27,2.8,34.3,"16 km SSE of San Vista, Mexico",Mexico,16.83,134.17,no
+2026-10-31,20:44,3.1,17.3,"75 km W of Villa Alto, Iceland",Iceland,-40.66,-89.4,no
+2026-10-31,20:20,3.1,33.3,"73 km E of Port Alto, Japan",Japan,-32.44,174.08,no
+2026-10-31,20:07,2.7,50.4,"33 km W of Kota Rosa, Mexico",Mexico,-9.43,-20.78,no
+2026-10-31,20:01,2.6,214.5,"19 km SW of Mount Alto, Alaska",Alaska,-22.07,158.59,no
+2026-10-31,19:13,3.7,22.3,"54 km E of San Rosa, CA",CA,-3.95,-161.42,no
+2026-10-31,18:52,3.1,7.2,"133 km NE of Villa Vista, Puerto Rico",Puerto Rico,50.73,-80.76,no
+2026-10-31,18:46,3.0,268.9,"123 km NE of Kota Rosa, Philippines",Philippines,-39.07,166.78,no
+2026-10-31,17:50,3.3,92.5,"54 km E of Kota Hope, Alaska",Alaska,-35.23,109.44,no
+2026-10-31,17:25,3.5,319.1,"17 km E of Mount Hope, Philippines",Philippines,-13.87,-87.84,no
+2026-10-31,17:21,2.8,446.8,"112 km E of Kota Rosa, Iceland",Iceland,25.66,40.71,no
+2026-10-31,17:13,2.6,31.2,"49 km E of San Rosa, Nevada",Nevada,0.15,49.61,no
+2026-10-31,16:28,3.8,6.8,"124 km SSE of Mount Hope, Fiji",Fiji,36.89,-159.77,no
+2026-10-31,13:32,2.7,19.9,"35 km W of Port Hope, Japan",Japan,-2.11,-73.89,no
+2026-10-31,12:25,2.5,20.7,"123 km S of Mount Vista, Greece",Greece,40.49,65.71,no
+2026-10-31,12:00,2.5,487.4,"110 km SW of Port Alto, Turkey",Turkey,45.62,-153.9,no
+2026-10-31,11:42,2.9,589.9,"58 km NE of Kota Vista, CA",CA,-0.52,151.44,no
+2026-10-31,11:29,2.5,14.9,"66 km SW of San Hope, Japan",Japan,18.64,79.7,no
+2026-10-31,10:45,2.6,16.6,"25 km WNW of Kota Baru, Alaska",Alaska,-38.2,71.97,no
+2026-10-31,09:31,3.3,14.0,"9 km SSE of Villa Rosa, CA",CA,45.75,25.52,no
+2026-10-31,09:27,3.7,33.9,"38 km SSE of San Rosa, Chile",Chile,-11.1,-129.43,no
+2026-10-31,08:29,3.0,327.4,"15 km N of Kota Vista, Indonesia",Indonesia,-3.14,0.16,no
+2026-10-31,08:05,4.2,29.7,"121 km SSE of Kota Hope, Japan",Japan,-44.26,-102.53,no
+2026-10-31,07:43,2.8,34.0,"119 km W of Kota Rosa, Indonesia",Indonesia,-38.96,174.52,no
+2026-10-31,07:12,3.2,10.3,"98 km E of San Hope, Japan",Japan,-0.02,-139.31,no
+2026-10-31,06:42,2.9,406.3,"16 km W of Villa Alto, Chile",Chile,23.63,-109.7,no
+2026-10-31,05:56,3.5,19.7,"62 km E of San Baru, Hawaii",Hawaii,-28.68,139.07,no
+2026-10-31,05:54,2.9,284.7,"133 km S of Port Baru, Peru",Peru,4.4,-172.58,no
+2026-10-31,05:48,3.1,30.2,"50 km W of San Alto, Turkey",Turkey,41.64,71.63,no
+2026-10-31,03:49,3.0,8.6,"70 km N of Port Hope, Hawaii",Hawaii,-6.2,-8.48,no
+2026-10-31,03:33,2.5,21.2,"102 km NE of Port Alto, Fiji",Fiji,-31.16,159.79,no
+2026-10-31,02:10,2.9,27.0,"112 km N of Villa Vista, Philippines",Philippines,-36.32,-0.31,no
+2026-10-31,02:00,3.1,89.4,"35 km NE of San Alto, Turkey",Turkey,-24.33,-119.25,no
+2026-10-31,01:48,3.3,31.5,"98 km S of Mount Alto, Turkey",Turkey,-23.62,-105.76,no
+2026-10-31,00:05,3.0,379.5,"107 km N of Kota Alto, Fiji",Fiji,-27.23,-42.72,no
+2026-10-30,23:49,2.8,330.9,"63 km S of Villa Vista, Alaska",Alaska,11.79,172.99,no
+2026-10-30,23:17,2.9,445.8,"22 km E of Kota Rosa, Chile",Chile,31.42,67.62,no
+2026-10-30,23:05,3.1,354.8,"111 km S of Mount Rosa, CA",CA,-32.56,-54.47,no
+2026-10-30,22:49,2.5,22.9,"40 km SW of San Rosa, CA",CA,50.89,104.25,no
+2026-10-30,22:37,3.3,16.1,"102 km N of Villa Baru, Nevada",Nevada,44.18,-106.04,no
+2026-10-30,22:09,2.7,33.9,"56 km SW of San Hope, Iceland",Iceland,-18.28,-44.02,no
+2026-10-30,21:54,2.9,50.6,"25 km SW of Mount Hope, Mexico",Mexico,19.49,-116.64,no
+2026-10-30,21:10,2.5,31.5,"34 km NE of Mount Vista, Puerto Rico",Puerto Rico,8.13,93.62,no
+2026-10-30,20:14,4.0,9.2,"45 km E of Mount Baru, Alaska",Alaska,47.43,155.94,no
+2026-10-30,19:52,3.8,14.7,"132 km WNW of Mount Alto, Fiji",Fiji,-35.76,-111.04,no
+2026-10-30,18:50,3.1,32.1,"72 km N of San Rosa, Mexico",Mexico,48.2,-65.47,no
+2026-10-30,18:38,4.4,23.1,"90 km SSE of San Vista, Peru",Peru,-26.0,177.89,no
+2026-10-30,18:27,2.8,34.0,"34 km N of Port Vista, Turkey",Turkey,57.72,67.52,no
+2026-10-30,17:40,2.9,388.8,"91 km S of Mount Rosa, Turkey",Turkey,-27.82,-38.67,no
+2026-10-30,16:48,3.9,617.3,"100 km E of Villa Rosa, Indonesia",Indonesia,55.16,178.32,no
+2026-10-30,15:56,2.9,252.5,"42 km NE of Kota Hope, Chile",Chile,34.66,-130.99,no
+2026-10-30,15:26,2.6,27.5,"37 km W of Mount Hope, Greece",Greece,-23.67,163.01,no
+2026-10-30,15:20,3.4,25.5,"66 km S of Mount Alto, Turkey",Turkey,-10.04,-148.98,no
+2026-10-30,15:02,3.3,470.7,"19 km W of Kota Rosa, Japan",Japan,-22.37,164.63,no
+2026-10-30,14:42,2.9,6.1,"67 km E of San Baru, Indonesia",Indonesia,-4.29,41.87,no
+2026-10-30,14:37,3.0,18.7,"51 km E of Kota Alto, Puerto Rico",Puerto Rico,57.93,-105.87,no
+2026-10-30,14:14,2.6,415.2,"9 km SSE of San Rosa, Greece",Greece,11.7,71.72,no
+2026-10-30,14:05,2.9,337.2,"69 km S of Kota Baru, Indonesia",Indonesia,44.57,29.74,no
+2026-10-30,13:49,2.5,6.5,"19 km SSE of Villa Baru, Peru",Peru,54.81,43.65,no
+2026-10-30,13:26,2.6,12.2,"117 km S of Port Hope, Peru",Peru,40.09,48.98,no
+2026-10-30,12:17,2.7,224.3,"63 km E of San Rosa, Greece",Greece,2.51,-91.49,no
+2026-10-30,10:07,3.7,18.8,"73 km S of Port Baru, Nevada",Nevada,-27.26,-98.53,no
+2026-10-30,10:05,5.0,553.8,"94 km WNW of Mount Alto, Hawaii",Hawaii,49.95,-94.96,no
+2026-10-30,09:53,2.6,11.5,"33 km SW of San Hope, Papua New Guinea",Papua New Guinea,-16.8,-52.02,no
+2026-10-30,09:39,4.2,31.3,"62 km W of San Vista, Peru",Peru,50.55,128.28,no
+2026-10-30,09:04,3.5,411.0,"85 km S of Port Hope, Turkey",Turkey,31.83,-130.15,no
+2026-10-30,06:42,2.6,21.0,"62 km N of Villa Hope, Papua New Guinea",Papua New Guinea,-33.77,-143.01,no
+2026-10-30,05:50,2.7,17.1,"74 km W of Villa Hope, New Zealand",New Zealand,-11.35,-71.98,no
+2026-10-30,05:25,4.1,27.0,"17 km SW of Kota Vista, Philippines",Philippines,-13.07,-178.16,no
+2026-10-30,04:47,2.6,27.8,"4 km E of Mount Alto, Iceland",Iceland,-13.2,-146.93,no
+2026-10-30,04:40,3.1,19.9,"113 km NE of Port Hope, Philippines",Philippines,-42.88,151.14,no
+2026-10-30,04:31,2.5,34.3,"98 km E of Villa Rosa, Papua New Guinea",Papua New Guinea,56.37,-66.2,no
+2026-10-30,04:24,3.5,26.8,"54 km NE of San Hope, Turkey",Turkey,-12.6,-41.04,no
+2026-10-30,04:11,3.3,323.9,"107 km SSE of Port Hope, Peru",Peru,-38.34,125.94,no
+2026-10-30,03:20,2.9,63.3,"131 km N of Kota Hope, Greece",Greece,59.32,167.59,no
+2026-10-30,03:07,2.7,194.5,"94 km WNW of Kota Rosa, Philippines",Philippines,59.92,13.24,no
+2026-10-30,02:27,4.1,37.3,"80 km SW of Port Baru, Papua New Guinea",Papua New Guinea,-28.43,121.66,no
+2026-10-30,02:23,4.0,56.6,"122 km N of San Vista, Fiji",Fiji,47.16,28.91,no
+2026-10-30,02:21,3.7,25.5,"93 km E of Port Alto, Philippines",Philippines,0.06,-123.99,no
+2026-10-30,00:56,3.3,122.7,"9 km SW of Mount Vista, Chile",Chile,-42.2,75.29,no
+2026-10-30,00:43,2.6,272.3,"86 km SSE of San Alto, Alaska",Alaska,2.51,-57.56,no
+2026-10-29,23:18,3.0,477.8,"120 km SSE of Villa Vista, Alaska",Alaska,-27.68,-173.29,no
+2026-10-29,21:11,3.7,299.6,"52 km N of Villa Baru, Chile",Chile,-17.18,-6.42,no
+2026-10-29,19:54,2.8,28.9,"21 km S of Port Hope, Papua New Guinea",Papua New Guinea,15.2,-101.07,no
+2026-10-29,18:44,2.6,180.3,"50 km W of Kota Hope, Chile",Chile,33.98,13.2,no
+2026-10-29,17:43,2.9,581.2,"123 km W of Mount Alto, New Zealand",New Zealand,-0.86,70.58,no
+2026-10-29,17:20,2.7,32.7,"38 km E of Villa Hope, Mexico",Mexico,51.87,114.73,no
+2026-10-29,17:10,2.6,612.9,"111 km N of Villa Vista, Japan",Japan,53.45,137.82,no
+2026-10-29,16:48,3.0,10.9,"132 km NE of Mount Vista, Iceland",Iceland,48.23,-131.75,no
+2026-10-29,16:27,2.7,357.6,"66 km SW of Villa Vista, Greece",Greece,-22.1,-53.39,no
+2026-10-29,16:21,3.2,421.9,"57 km SSE of Kota Alto, Indonesia",Indonesia,51.99,-49.22,no
+2026-10-29,15:43,3.3,32.2,"126 km W of Villa Baru, Indonesia",Indonesia,37.44,-107.75,no
+2026-10-29,15:16,2.8,145.8,"129 km SW of Port Alto, Peru",Peru,-31.48,-14.2,no
+2026-10-29,15:13,2.8,134.1,"26 km N of San Baru, Puerto Rico",Puerto Rico,48.38,-103.55,no
+2026-10-29,14:51,3.9,2.3,"92 km SSE of San Vista, Iceland",Iceland,50.57,84.8,no
+2026-10-29,14:41,2.8,527.8,"61 km W of Villa Baru, Fiji",Fiji,37.25,-6.68,no
+2026-10-29,14:38,2.7,30.6,"54 km W of San Rosa, Fiji",Fiji,-20.75,175.92,no
+2026-10-29,13:22,2.9,3.3,"105 km S of Villa Hope, Chile",Chile,56.09,18.46,no
+2026-10-29,12:52,3.2,328.4,"76 km E of Mount Alto, Papua New Guinea",Papua New Guinea,26.36,12.45,no
+2026-10-29,12:26,2.8,69.0,"38 km S of Villa Alto, Turkey",Turkey,-36.3,6.44,no
+2026-10-29,12:09,4.3,32.0,"70 km SSE of Kota Vista, Alaska",Alaska,-1.42,109.73,no
+2026-10-29,12:03,2.6,181.5,"110 km S of San Baru, Philippines",Philippines,36.68,35.45,no
+2026-10-29,11:04,2.6,574.9,"103 km SW of San Hope, Hawaii",Hawaii,-35.41,60.2,no
+2026-10-29,10:46,2.8,21.2,"21 km WNW of Port Baru, Tonga",Tonga,-6.46,-9.33,no
+2026-10-29,10:06,3.8,81.6,"138 km S of Port Hope, Philippines",Philippines,-36.77,125.51,no
+2026-10-29,10:04,3.4,26.8,"41 km W of Villa Baru, Nevada",Nevada,51.03,140.72,no
+2026-10-29,09:12,3.2,2.8,"32 km E of Port Hope, Hawaii",Hawaii,39.18,23.61,no
+2026-10-29,07:53,2.7,326.7,"75 km N of Mount Vista, Nevada",Nevada,19.69,-95.82,no
+2026-10-29,07:28,2.9,28.2,"6 km S of Kota Baru, Philippines",Philippines,-5.34,11.22,no
+2026-10-29,06:40,3.6,558.3,"108 km N of Kota Vista, Iceland",Iceland,21.29,123.96,no
+2026-10-29,06:39,2.6,28.2,"123 km SW of San Hope, Papua New Guinea",Papua New Guinea,-5.57,164.17,no
+2026-10-29,06:10,3.5,182.7,"101 km SW of San Hope, Indonesia",Indonesia,-42.14,-74.44,no
+2026-10-29,05:47,2.8,415.1,"102 km W of San Baru, Greece",Greece,-9.99,-98.54,no
+2026-10-29,05:40,3.0,416.6,"66 km WNW of Kota Hope, Tonga",Tonga,53.97,38.73,no
+2026-10-29,05:32,3.2,547.8,"55 km N of San Alto, Greece",Greece,13.37,-25.87,no
+2026-10-29,05:07,3.1,186.1,"59 km SSE of Kota Baru, Nevada",Nevada,40.03,40.91,no
+2026-10-29,03:56,2.9,30.3,"24 km E of Port Baru, CA",CA,-26.53,105.9,no
+2026-10-29,03:13,3.8,31.0,"29 km W of Port Rosa, Indonesia",Indonesia,47.18,-133.2,no
+2026-10-29,03:10,3.0,34.0,"55 km E of Kota Baru, CA",CA,23.39,114.34,no
+2026-10-29,02:46,4.4,222.0,"90 km WNW of San Alto, Mexico",Mexico,-42.38,13.46,no
+2026-10-29,02:44,2.8,29.4,"21 km N of Villa Vista, Greece",Greece,-10.18,-69.96,no
+2026-10-29,02:42,2.7,366.3,"52 km N of Mount Vista, Chile",Chile,-28.56,129.11,no
+2026-10-29,01:42,2.5,444.1,"114 km S of Port Hope, Papua New Guinea",Papua New Guinea,51.65,163.24,no
+2026-10-29,01:03,2.7,228.8,"95 km WNW of Port Alto, New Zealand",New Zealand,-17.16,115.75,no
+2026-10-29,01:02,2.8,32.5,"63 km SW of Mount Baru, Puerto Rico",Puerto Rico,-22.04,-133.49,no
+2026-10-29,00:42,2.9,216.5,"19 km E of Port Hope, Peru",Peru,13.28,33.84,no
+2026-10-29,00:21,3.2,505.4,"4 km N of Villa Hope, Turkey",Turkey,9.83,51.16,no
+2026-10-28,23:15,3.6,4.6,"35 km SSE of Port Alto, Alaska",Alaska,13.54,168.46,no
+2026-10-28,23:03,5.2,330.0,"132 km W of Kota Baru, Iceland",Iceland,41.35,-110.02,no

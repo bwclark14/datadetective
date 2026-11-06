@@ -56,3 +56,95 @@ export function carbonRegional(regionid, shortname, periods = 96) {
   }
   return { data: { regionid, dnoregion: 'SSE', shortname, data } };
 }
+
+export function openMeteoAir(start = '2026-11-01', days = 8) {
+  const base = openMeteoHourly(start, days);
+  const n = base.hourly.time.length;
+  const series = f => Array.from({ length: n }, (_, i) => f(i));
+  return {
+    timezone: 'Europe/London',
+    hourly: {
+      time: base.hourly.time,
+      european_aqi: series(i => 10 + (i % 50)),
+      pm2_5: series(i => 3 + (i % 7)), pm10: series(i => 6 + (i % 9)),
+      nitrogen_dioxide: series(i => 10 + (i % 24)), ozone: series(i => 40 - (i % 20)),
+      birch_pollen: series(() => null), grass_pollen: series(() => null),
+    },
+  };
+}
+
+// NOAA's Kp feed as a header row followed by arrays.
+export function noaaKp(asObjects = false) {
+  const rows = [];
+  for (let k = 0; k < 56; k++) {
+    const t = new Date(Date.UTC(2026, 9, 30) + k * 3 * 3600000).toISOString().replace('T', ' ').slice(0, 19) + '.000';
+    rows.push([t, String((k % 9) + 0.33), '5', '8']);
+  }
+  if (asObjects) return rows.map(r => ({ time_tag: r[0], Kp: Number(r[1]), a_running: 5, station_count: 8 }));
+  return [['time_tag', 'Kp', 'a_running', 'station_count'], ...rows];
+}
+
+export function usgsQuakes(n = 40) {
+  return {
+    type: 'FeatureCollection',
+    features: Array.from({ length: n }, (_, i) => ({
+      type: 'Feature',
+      properties: { mag: 2.5 + (i % 40) / 10, place: i % 3 ? `${10 + i} km S of Town, ${['Alaska', 'Japan', 'Chile'][i % 3]}` : 'south of the Fiji Islands', time: Date.UTC(2026, 10, 1) + i * 3600000, tsunami: i === 39 ? 1 : 0 },
+      geometry: { type: 'Point', coordinates: [-150 + i, 60 - i, 10 + i] },
+    })),
+  };
+}
+
+export function inatPlaces() {
+  return { results: [{ id: 99999, name: 'Scotland', display_name: 'Scotland, UK', admin_level: 10 }, { id: 1, name: 'Scotland County', display_name: 'Scotland County, US' }] };
+}
+
+export function inatObservations(n = 30) {
+  const taxa = [
+    { name: 'Ardea cinerea', preferred_common_name: 'grey heron', iconic_taxon_name: 'Aves' },
+    { name: 'Sciurus vulgaris', preferred_common_name: 'Eurasian red squirrel', iconic_taxon_name: 'Mammalia' },
+    { name: 'Amanita muscaria', preferred_common_name: 'fly agaric', iconic_taxon_name: 'Fungi' },
+  ];
+  return {
+    total_results: n,
+    results: Array.from({ length: n }, (_, i) => ({
+      observed_on: `2026-11-0${(i % 5) + 1}`,
+      place_guess: i % 2 ? '12 Some Road, Leith, Edinburgh, Scotland, GB' : 'Cairngorms National Park, UK',
+      location: `${57.123 + i / 100},${-3.987}`,
+      user: { login: 'secret_person' },
+      taxon: taxa[i % 3],
+    })),
+  };
+}
+
+export function sepaStations() {
+  return [
+    ['station_name', 'river_name', 'ts_id', 'ts_name'],
+    ['Ballathie', 'Tay', '111', '15minute'],
+    ['Daldowie', 'River Clyde', '222', '15minute'],
+    ['Boat o Brig', 'Spey', '333', '15minute'],
+    ['Somewhere', 'Wee Burn', '444', '15minute'],
+  ];
+}
+
+export function sepaValues(ids = ['111', '222', '333']) {
+  return ids.map(id => ({
+    ts_id: id, rows: '96', columns: 'Timestamp,Value',
+    data: Array.from({ length: 96 }, (_, k) => [new Date(Date.UTC(2026, 10, 1) + k * 900000).toISOString().replace('Z', '+00:00'), 1 + k / 1000]),
+  }));
+}
+
+/** A stand-in fetch that answers every live service with the fixtures above. */
+export function fixtureFetch(url) {
+  let body;
+  if (url.includes('air-quality-api')) body = openMeteoAir();
+  else if (url.includes('open-meteo')) body = url.includes('daily=') ? openMeteoDaily() : openMeteoHourly();
+  else if (url.includes('carbonintensity')) body = carbonRegional(url.endsWith('/1') ? 1 : 2, 'Scotland');
+  else if (url.includes('swpc.noaa.gov')) body = noaaKp();
+  else if (url.includes('earthquake.usgs.gov')) body = usgsQuakes();
+  else if (url.includes('places/autocomplete')) body = inatPlaces();
+  else if (url.includes('inaturalist')) body = inatObservations();
+  else if (url.includes('getTimeseriesList')) body = sepaStations();
+  else if (url.includes('getTimeseriesValues')) body = sepaValues();
+  return body;
+}

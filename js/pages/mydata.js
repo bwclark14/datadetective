@@ -7,7 +7,8 @@ import { friendlyError } from '../marking.js';
 import { getPref, setPref } from '../progress.js';
 import { el, topbar, renderResult, params, fatal } from '../ui.js';
 import { makeRng } from '../rng.js';
-import { PLACES, SOURCES, fetchLive, weatherWeekStarters, WEATHER_SCOTLAND_STARTERS, ELECTRICITY_STARTERS } from '../live.js';
+import { PLACES, SOURCES, SOURCE_LIST, fetchLive } from '../live.js';
+import { renderAbout } from '../about-data.js';
 
 const SAMPLES = [
   { file: 'class-survey.csv', label: 'Class survey' },
@@ -37,26 +38,23 @@ async function start() {
     el('div', { class: 'samples' }, SAMPLES.map(s => el('button', {
       class: 'btn btn-small', type: 'button', onclick: () => loadSample(s),
     }, s.label))));
-  const placeSelect = el('select', { id: 'live-place', class: 'place-select' },
-    PLACES.map(pl => el('option', { value: pl.name, selected: pl.name === 'Glasgow' ? true : null }, pl.name)));
   const liveSection = el('section', { class: 'panel live', 'aria-label': 'Live data' },
     el('h2', {}, 'Live data'),
     el('p', {}, 'Fetch real, up-to-date public data. Only a request for public data is sent — nothing about you.'),
-    el('div', { class: 'live-options' },
-      el('div', { class: 'live-option' },
-        el('h3', {}, 'Weather this week'),
-        el('p', { class: 'muted' }, 'Every hour for the last 7 days: temperature, rain, wind, humidity and cloud.'),
-        el('div', { class: 'field-row' },
-          el('label', { for: 'live-place' }, 'Place'), placeSelect,
-          el('button', { class: 'btn btn-primary btn-small', type: 'button', onclick: () => loadLive('weatherWeek', { place: placeSelect.value }) }, 'Fetch weather'))),
-      el('div', { class: 'live-option' },
-        el('h3', {}, 'Weather around Scotland'),
-        el('p', { class: 'muted' }, `One row per day for the last 14 days in ${PLACES.length} places, from Lerwick to Dumfries.`),
-        el('button', { class: 'btn btn-primary btn-small', type: 'button', onclick: () => loadLive('weatherScotland') }, 'Fetch weather')),
-      el('div', { class: 'live-option' },
-        el('h3', {}, 'Scotland\'s electricity'),
-        el('p', { class: 'muted' }, 'Every half hour for the last 2 days: how green the electricity was, and how much came from wind, hydro, gas and more.'),
-        el('button', { class: 'btn btn-primary btn-small', type: 'button', onclick: () => loadLive('electricity') }, 'Fetch electricity data'))));
+    el('div', { class: 'live-options' }, SOURCE_LIST.map(source => {
+      const id = `live-place-${source.id}`;
+      const select = source.needsPlace
+        ? el('select', { id, class: 'place-select' }, PLACES.map(pl => el('option', { value: pl.name, selected: pl.name === 'Glasgow' ? true : null }, pl.name)))
+        : null;
+      const button = el('button', {
+        class: 'btn btn-primary btn-small', type: 'button', 'data-source': source.id,
+        onclick: () => loadLive(source.id, { place: select?.value }),
+      }, 'Fetch data');
+      return el('div', { class: 'live-option' },
+        el('h3', {}, source.label),
+        el('p', { class: 'muted' }, source.blurb),
+        select ? el('div', { class: 'field-row' }, el('label', { for: id }, 'Place'), select, button) : button);
+    })));
   const preview = el('div');
   const workspace = el('div');
   const tableInfo = new Map();
@@ -64,7 +62,7 @@ async function start() {
   main.replaceChildren(
     el('section', { class: 'hero', style: 'padding-bottom:12px' },
       el('h1', {}, 'Ask questions of your own data.'),
-      el('p', { class: 'lede' }, 'Load a spreadsheet saved as CSV, or fetch live weather and electricity data. Check the column types, then query it with Blocks, Tiles or Type.'),
+      el('p', { class: 'lede' }, 'Load a spreadsheet saved as CSV, or fetch live data: weather, air quality, rivers, electricity, earthquakes, the northern lights and wildlife. Check the column types, then query it with Blocks, Tiles or Type.'),
       el('p', { class: 'notice' }, 'Your file is read on this device and never uploaded. It disappears when you close the tab. Don\'t use files with personal details about real people.')),
     dropzone, liveSection, status, preview, workspace);
 
@@ -107,25 +105,25 @@ async function start() {
       if (!table.rows.length) throw new Error('The service sent back no readings.');
       const time = new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
       showPreview(`${table.name}.csv`, toCSV(table.columns, table.rows), undefined, {
-        name: table.name, credit: source.credit, starters: table.starters, types: table.types,
+        name: table.name, credit: table.credit, starters: table.starters, types: table.types, about: table.about,
         note: `Live data fetched at ${time} today.`,
       });
     } catch (e) {
       status.replaceChildren(el('div', { class: 'notice bad', role: 'alert' },
         el('p', {}, `Couldn't fetch ${source.label.toLowerCase()}: ${e.message}`),
-        el('button', { class: 'btn btn-small', type: 'button', onclick: () => loadExample(sourceId) }, 'Use the saved example instead')));
+        el('button', { class: 'btn btn-small', type: 'button', onclick: () => loadExample(sourceId, opts) }, 'Use the saved example instead')));
     }
   }
 
-  async function loadExample(sourceId) {
+  async function loadExample(sourceId, opts = {}) {
     const source = SOURCES[sourceId];
     try {
       const res = await fetch(source.example);
       if (!res.ok) throw new Error(res.statusText);
-      const starters = { weatherWeek: weatherWeekStarters('Glasgow'), weatherScotland: WEATHER_SCOTLAND_STARTERS, electricity: ELECTRICITY_STARTERS }[sourceId];
-      const name = { weatherWeek: 'weather_example', weatherScotland: 'weather_scotland_example', electricity: 'electricity_example' }[sourceId];
-      showPreview(`${name}.csv`, await res.text(), undefined, {
-        name, starters, types: source.types,
+      const place = sourceId === 'weatherWeek' || sourceId === 'airQuality' ? 'Glasgow' : opts.place;
+      showPreview(`${sourceId}_example.csv`, await res.text(), undefined, {
+        name: `${source.id.replace(/[A-Z]/g, c => `_${c.toLowerCase()}`)}_example`,
+        starters: source.starters(place || 'Glasgow'), types: source.types, about: source.about(place || 'Glasgow'), credit: source.credit,
         note: 'This is a saved example made to look like real data — not today\'s readings.',
       });
     } catch {
@@ -166,7 +164,8 @@ async function start() {
 
     preview.replaceChildren(el('section', { class: 'panel', 'aria-label': 'Check your data' },
       el('h2', {}, 'Check your data'),
-      meta.note ? el('p', { class: 'notice' }, meta.note, meta.credit ? el('span', { class: 'credit' }, meta.credit) : null) : null,
+      meta.note ? el('p', { class: 'notice' }, meta.note) : null,
+      meta.about ? renderAbout(meta.about, meta.credit, { open: true }) : null,
       el('p', {}, `${prepared.rows.length} rows and ${prepared.names.length} columns. Here are the first 10 rows. `,
         'Choose the best data type for each column — the menu shows a guess. Getting it right matters: you can only add up and average numbers, and text is compared letter by letter, so "10" comes before "9".'),
       el('details', { class: 'type-guide' },
@@ -235,7 +234,8 @@ async function start() {
         el('section', { class: 'panel' }, el('h2', {}, 'Your tables'), tabs,
           el('p', { class: 'columns-list' }, def.columns.map(c => `${c.name} (${typeLabel(c.type)})`).join(', ')),
           el('p', { class: 'muted' }, `${def.rows.length} records.`),
-          info.credit ? el('p', { class: 'credit' }, info.credit) : null),
+          info.credit && !info.about ? el('p', { class: 'credit' }, info.credit) : null),
+        info.about ? renderAbout(info.about, info.credit, { open: true, panel: true }) : null,
         starters),
       el('div', { style: 'display:grid;gap:16px' }, editorHost,
         el('section', { class: 'panel result-panel', 'aria-live': 'polite' }, el('h2', {}, 'Results'), resultBox, exportBtn))));

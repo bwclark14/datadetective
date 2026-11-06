@@ -31,13 +31,20 @@ Pieces can be dragged with a mouse or finger, tapped then placed, or moved with 
 
 **My data** — pupils load their own CSV file, choose a data type for each column (Text, Integer, Real, Date, Time or Boolean — a guess is preselected, and values that don't fit are flagged), then query it with the same editor. UK dates such as 03/11/2026 are stored as 2026-11-03 so they sort correctly, and Boolean columns can be queried with `= TRUE`. Three fictional sample files are included.
 
-**Live data** — also in My data, pupils can fetch real public data straight into a table:
+**Live data** — also in My data, pupils can fetch real public data straight into a table. Each data set opens with an *About this data* card explaining, in plain English, what it is, where it comes from, how often it changes, what each row is, and what every column means.
 
-- *Weather this week*: hourly readings for the last 7 days in a chosen Scottish place ([Open-Meteo](https://open-meteo.com), CC BY 4.0).
-- *Weather around Scotland*: daily readings for the last 14 days in 11 places, from Lerwick to Dumfries (Open-Meteo).
-- *Scotland's electricity*: half-hourly carbon intensity and fuel mix for North and South Scotland over the last 2 days ([Carbon Intensity API](https://carbonintensity.org.uk), National Energy System Operator, CC BY 4.0).
+| Data set | What it is | Source |
+|---|---|---|
+| Weather this week | Hourly weather for the last 7 days in a chosen Scottish place | [Open-Meteo](https://open-meteo.com) (CC BY 4.0) |
+| Weather around Scotland | Daily weather for the last 14 days in 11 places | Open-Meteo |
+| Air quality | Hourly pollution levels and pollen for the last 7 days in a chosen place | Open-Meteo / Copernicus (CC BY 4.0) |
+| Scottish rivers | Hourly water levels for the last 7 days on rivers such as the Tay, Clyde and Spey | [SEPA](https://timeseriesdoc.sepa.org.uk) (Open Government Licence) |
+| Scotland's electricity | Half-hourly carbon intensity and fuel mix for North and South Scotland | [Carbon Intensity API](https://carbonintensity.org.uk) (CC BY 4.0) |
+| Earthquakes this week | Every magnitude 2.5+ earthquake worldwide in the last 7 days | [USGS](https://earthquake.usgs.gov) (public domain) |
+| Northern lights watch | The Kp index every 3 hours for the last week, with a rough aurora guide for Scotland | [NOAA SWPC](https://www.swpc.noaa.gov) (public domain) |
+| Wildlife sightings | The 200 most recent checked sightings in Scotland; no usernames, rounded locations | [iNaturalist](https://www.inaturalist.org) |
 
-Each comes with questions to try. No account or key is needed, and only a request for public data is sent. If a school network blocks a service, pupils are offered a saved example instead (clearly labelled as an example, not real readings). Live data isn't marked — it's for exploring.
+No account or key is needed, and only a request for public data is sent. If a school network blocks a service, pupils are offered a saved example instead (clearly labelled as an example, not real readings). Live data isn't marked — it's for exploring. Each source is one file in `js/live/`.
 
 ## For teachers
 

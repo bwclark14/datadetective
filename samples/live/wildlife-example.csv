@@ -1,0 +1,201 @@
+date,common_name,scientific_name,wildlife_group,area,latitude,longitude
+2026-11-05,Grey seal,Halichoerus grypus,Mammal,Fife,56.2,-3.0
+2026-11-05,Garden spider,Araneus diadematus,Spider,Edinburgh,55.9,-3.3
+2026-11-05,Heather,Calluna vulgaris,Plant,Isle of Skye,57.3,-6.3
+2026-11-05,Grey heron,Ardea cinerea,Bird,Isle of Skye,57.4,-6.3
+2026-11-05,Grey seal,Halichoerus grypus,Mammal,Orkney,59.1,-3.0
+2026-11-05,Common ivy,Hedera helix,Plant,Orkney,59.1,-3.0
+2026-11-05,Redwing,Turdus iliacus,Bird,Inverness,57.4,-4.3
+2026-11-05,Common limpet,Patella vulgata,Mollusc,Shetland,60.2,-1.2
+2026-11-05,Common ivy,Hedera helix,Plant,Isle of Skye,57.2,-6.2
+2026-11-05,Common frog,Rana temporaria,Amphibian,Aberdeen,57.2,-2.1
+2026-11-05,Redwing,Turdus iliacus,Bird,Shetland,60.2,-1.3
+2026-11-05,Fly agaric,Amanita muscaria,Fungus,Stirling,56.0,-3.9
+2026-11-05,Grey heron,Ardea cinerea,Bird,Dumfries and Galloway,55.1,-4.0
+2026-11-05,Common limpet,Patella vulgata,Mollusc,Shetland,60.3,-1.4
+2026-11-04,European robin,Erithacus rubecula,Bird,Cairngorms,57.1,-3.7
+2026-11-04,Grey seal,Halichoerus grypus,Mammal,Orkney,59.0,-3.1
+2026-11-04,Red squirrel,Sciurus vulgaris,Mammal,Isle of Skye,57.3,-6.3
+2026-11-04,Heather,Calluna vulgaris,Plant,Orkney,59.0,-3.1
+2026-11-04,Red admiral,Vanessa atalanta,Insect,Cairngorms,57.1,-3.8
+2026-11-04,Eurasian otter,Lutra lutra,Mammal,Dundee,56.6,-2.9
+2026-11-04,Heather,Calluna vulgaris,Plant,Dundee,56.5,-3.0
+2026-11-04,Eurasian otter,Lutra lutra,Mammal,Dumfries and Galloway,55.1,-4.0
+2026-11-04,Garden spider,Araneus diadematus,Spider,Edinburgh,55.9,-3.2
+2026-11-04,Red squirrel,Sciurus vulgaris,Mammal,Inverness,57.6,-4.3
+2026-11-04,Redwing,Turdus iliacus,Bird,Orkney,58.9,-2.9
+2026-11-04,Common limpet,Patella vulgata,Mollusc,Cairngorms,57.0,-3.7
+2026-11-04,Bladder wrack,Fucus vesiculosus,Seaweed and algae,Dundee,56.4,-2.9
+2026-11-04,European robin,Erithacus rubecula,Bird,Fife,56.1,-3.1
+2026-11-03,Redwing,Turdus iliacus,Bird,Dumfries and Galloway,55.1,-4.1
+2026-11-03,Garden spider,Araneus diadematus,Spider,Cairngorms,57.2,-3.7
+2026-11-03,Common ivy,Hedera helix,Plant,Edinburgh,55.9,-3.3
+2026-11-03,Common limpet,Patella vulgata,Mollusc,Cairngorms,57.1,-3.6
+2026-11-03,European robin,Erithacus rubecula,Bird,Inverness,57.5,-4.3
+2026-11-03,Fly agaric,Amanita muscaria,Fungus,Shetland,60.4,-1.3
+2026-11-03,Common buzzard,Buteo buteo,Bird,Shetland,60.4,-1.2
+2026-11-03,Pink-footed goose,Anser brachyrhynchus,Bird,Inverness,57.5,-4.2
+2026-11-03,Red admiral,Vanessa atalanta,Insect,Glasgow,55.9,-4.3
+2026-11-03,Eurasian otter,Lutra lutra,Mammal,Cairngorms,57.2,-3.7
+2026-11-03,Grey heron,Ardea cinerea,Bird,Stirling,56.1,-3.9
+2026-11-03,Common ivy,Hedera helix,Plant,Inverness,57.5,-4.2
+2026-11-03,Garden spider,Araneus diadematus,Spider,Glasgow,55.9,-4.3
+2026-11-03,Common frog,Rana temporaria,Amphibian,Orkney,59.0,-3.0
+2026-11-02,European robin,Erithacus rubecula,Bird,Dumfries and Galloway,55.0,-4.0
+2026-11-02,Shaggy inkcap,Coprinus comatus,Fungus,Isle of Skye,57.3,-6.2
+2026-11-02,Common ivy,Hedera helix,Plant,Shetland,60.4,-1.3
+2026-11-02,Heather,Calluna vulgaris,Plant,Aberdeen,57.2,-2.1
+2026-11-02,Turkey tail,Trametes versicolor,Fungus,Orkney,59.1,-3.1
+2026-11-02,European robin,Erithacus rubecula,Bird,Isle of Skye,57.3,-6.2
+2026-11-02,Redwing,Turdus iliacus,Bird,Inverness,57.5,-4.2
+2026-11-02,Grey seal,Halichoerus grypus,Mammal,Isle of Skye,57.2,-6.3
+2026-11-02,Red admiral,Vanessa atalanta,Insect,Orkney,58.9,-3.0
+2026-11-02,Pink-footed goose,Anser brachyrhynchus,Bird,Shetland,60.3,-1.2
+2026-11-02,Redwing,Turdus iliacus,Bird,Fife,56.2,-3.0
+2026-11-02,Common frog,Rana temporaria,Amphibian,Fife,56.2,-3.2
+2026-11-02,Fly agaric,Amanita muscaria,Fungus,Inverness,57.5,-4.2
+2026-11-02,Red squirrel,Sciurus vulgaris,Mammal,Cairngorms,57.2,-3.7
+2026-11-01,Common frog,Rana temporaria,Amphibian,Inverness,57.6,-4.2
+2026-11-01,Common buzzard,Buteo buteo,Bird,Shetland,60.3,-1.3
+2026-11-01,Common frog,Rana temporaria,Amphibian,Orkney,59.0,-3.1
+2026-11-01,Turkey tail,Trametes versicolor,Fungus,Fife,56.2,-3.2
+2026-11-01,Eurasian otter,Lutra lutra,Mammal,Stirling,56.1,-3.9
+2026-11-01,Eurasian otter,Lutra lutra,Mammal,Dumfries and Galloway,55.0,-4.0
+2026-11-01,Shaggy inkcap,Coprinus comatus,Fungus,Shetland,60.4,-1.2
+2026-11-01,Shaggy inkcap,Coprinus comatus,Fungus,Dundee,56.6,-3.1
+2026-11-01,Garden spider,Araneus diadematus,Spider,Inverness,57.5,-4.1
+2026-11-01,Heather,Calluna vulgaris,Plant,Fife,56.1,-3.1
+2026-11-01,Fly agaric,Amanita muscaria,Fungus,Orkney,59.1,-3.0
+2026-11-01,Red squirrel,Sciurus vulgaris,Mammal,Inverness,57.4,-4.3
+2026-11-01,Red deer,Cervus elaphus,Mammal,Stirling,56.1,-3.9
+2026-11-01,Redwing,Turdus iliacus,Bird,Orkney,59.1,-2.9
+2026-10-31,Common ivy,Hedera helix,Plant,Aberdeen,57.1,-2.2
+2026-10-31,Bladder wrack,Fucus vesiculosus,Seaweed and algae,Glasgow,55.8,-4.3
+2026-10-31,Garden spider,Araneus diadematus,Spider,Glasgow,55.9,-4.2
+2026-10-31,Grey heron,Ardea cinerea,Bird,Dundee,56.4,-2.9
+2026-10-31,Red admiral,Vanessa atalanta,Insect,Orkney,59.1,-3.0
+2026-10-31,Red squirrel,Sciurus vulgaris,Mammal,Shetland,60.3,-1.2
+2026-10-31,Fly agaric,Amanita muscaria,Fungus,Inverness,57.5,-4.1
+2026-10-31,Red admiral,Vanessa atalanta,Insect,Isle of Skye,57.4,-6.1
+2026-10-31,Red admiral,Vanessa atalanta,Insect,Glasgow,55.9,-4.4
+2026-10-31,Fly agaric,Amanita muscaria,Fungus,Glasgow,56.0,-4.4
+2026-10-31,Garden spider,Araneus diadematus,Spider,Aberdeen,57.1,-2.1
+2026-10-31,Grey seal,Halichoerus grypus,Mammal,Dumfries and Galloway,55.0,-4.1
+2026-10-31,Fly agaric,Amanita muscaria,Fungus,Shetland,60.3,-1.3
+2026-10-31,Red squirrel,Sciurus vulgaris,Mammal,Inverness,57.4,-4.2
+2026-10-30,Heather,Calluna vulgaris,Plant,Edinburgh,55.9,-3.2
+2026-10-30,Eurasian otter,Lutra lutra,Mammal,Shetland,60.3,-1.3
+2026-10-30,Redwing,Turdus iliacus,Bird,Dundee,56.5,-3.0
+2026-10-30,Common limpet,Patella vulgata,Mollusc,Fife,56.3,-3.2
+2026-10-30,European robin,Erithacus rubecula,Bird,Edinburgh,55.9,-3.2
+2026-10-30,Pink-footed goose,Anser brachyrhynchus,Bird,Stirling,56.2,-3.9
+2026-10-30,Common frog,Rana temporaria,Amphibian,Inverness,57.6,-4.1
+2026-10-30,Red deer,Cervus elaphus,Mammal,Cairngorms,57.1,-3.8
+2026-10-30,Common limpet,Patella vulgata,Mollusc,Cairngorms,57.1,-3.7
+2026-10-30,Fly agaric,Amanita muscaria,Fungus,Inverness,57.6,-4.3
+2026-10-30,Pink-footed goose,Anser brachyrhynchus,Bird,Isle of Skye,57.3,-6.2
+2026-10-30,Garden spider,Araneus diadematus,Spider,Dumfries and Galloway,55.0,-4.0
+2026-10-30,Red admiral,Vanessa atalanta,Insect,Cairngorms,57.2,-3.8
+2026-10-30,European robin,Erithacus rubecula,Bird,Glasgow,56.0,-4.4
+2026-10-29,Common limpet,Patella vulgata,Mollusc,Orkney,58.9,-2.9
+2026-10-29,European robin,Erithacus rubecula,Bird,Dumfries and Galloway,54.9,-4.0
+2026-10-29,Roe deer,Capreolus capreolus,Mammal,Cairngorms,57.1,-3.8
+2026-10-29,Pink-footed goose,Anser brachyrhynchus,Bird,Stirling,56.2,-3.9
+2026-10-29,Bladder wrack,Fucus vesiculosus,Seaweed and algae,Aberdeen,57.2,-2.0
+2026-10-29,Fly agaric,Amanita muscaria,Fungus,Shetland,60.3,-1.3
+2026-10-29,European robin,Erithacus rubecula,Bird,Isle of Skye,57.2,-6.2
+2026-10-29,Heather,Calluna vulgaris,Plant,Shetland,60.3,-1.4
+2026-10-29,Heather,Calluna vulgaris,Plant,Orkney,59.0,-3.0
+2026-10-29,Garden spider,Araneus diadematus,Spider,Inverness,57.5,-4.2
+2026-10-29,Red admiral,Vanessa atalanta,Insect,Shetland,60.3,-1.3
+2026-10-29,Common limpet,Patella vulgata,Mollusc,Inverness,57.6,-4.2
+2026-10-29,Grey seal,Halichoerus grypus,Mammal,Isle of Skye,57.3,-6.3
+2026-10-29,Grey heron,Ardea cinerea,Bird,Isle of Skye,57.2,-6.2
+2026-10-28,Red deer,Cervus elaphus,Mammal,Aberdeen,57.1,-2.1
+2026-10-28,Pink-footed goose,Anser brachyrhynchus,Bird,Edinburgh,55.9,-3.1
+2026-10-28,Red admiral,Vanessa atalanta,Insect,Dumfries and Galloway,55.0,-3.9
+2026-10-28,Grey heron,Ardea cinerea,Bird,Edinburgh,56.0,-3.1
+2026-10-28,Roe deer,Capreolus capreolus,Mammal,Cairngorms,57.0,-3.6
+2026-10-28,Common ivy,Hedera helix,Plant,Dumfries and Galloway,55.0,-4.0
+2026-10-28,Common ivy,Hedera helix,Plant,Glasgow,55.8,-4.3
+2026-10-28,Eurasian otter,Lutra lutra,Mammal,Cairngorms,57.1,-3.6
+2026-10-28,Red admiral,Vanessa atalanta,Insect,Isle of Skye,57.3,-6.2
+2026-10-28,Bladder wrack,Fucus vesiculosus,Seaweed and algae,Dumfries and Galloway,55.0,-4.0
+2026-10-28,Common frog,Rana temporaria,Amphibian,Stirling,56.2,-3.9
+2026-10-28,Roe deer,Capreolus capreolus,Mammal,Inverness,57.4,-4.2
+2026-10-28,Pink-footed goose,Anser brachyrhynchus,Bird,Inverness,57.5,-4.3
+2026-10-28,Red squirrel,Sciurus vulgaris,Mammal,Fife,56.1,-3.1
+2026-10-27,Grey heron,Ardea cinerea,Bird,Inverness,57.6,-4.1
+2026-10-27,Redwing,Turdus iliacus,Bird,Cairngorms,57.1,-3.7
+2026-10-27,Turkey tail,Trametes versicolor,Fungus,Dundee,56.5,-3.1
+2026-10-27,Red deer,Cervus elaphus,Mammal,Inverness,57.5,-4.1
+2026-10-27,Turkey tail,Trametes versicolor,Fungus,Aberdeen,57.1,-2.1
+2026-10-27,Bladder wrack,Fucus vesiculosus,Seaweed and algae,Dundee,56.4,-3.0
+2026-10-27,Heather,Calluna vulgaris,Plant,Stirling,56.0,-4.0
+2026-10-27,Red admiral,Vanessa atalanta,Insect,Cairngorms,57.2,-3.7
+2026-10-27,Common limpet,Patella vulgata,Mollusc,Shetland,60.4,-1.4
+2026-10-27,Red squirrel,Sciurus vulgaris,Mammal,Cairngorms,57.1,-3.6
+2026-10-27,Eurasian otter,Lutra lutra,Mammal,Shetland,60.3,-1.2
+2026-10-27,Roe deer,Capreolus capreolus,Mammal,Shetland,60.3,-1.3
+2026-10-27,Red deer,Cervus elaphus,Mammal,Glasgow,55.8,-4.2
+2026-10-27,European robin,Erithacus rubecula,Bird,Dundee,56.5,-3.1
+2026-10-26,Grey heron,Ardea cinerea,Bird,Dundee,56.4,-2.9
+2026-10-26,Redwing,Turdus iliacus,Bird,Isle of Skye,57.3,-6.2
+2026-10-26,Garden spider,Araneus diadematus,Spider,Isle of Skye,57.4,-6.2
+2026-10-26,Roe deer,Capreolus capreolus,Mammal,Fife,56.3,-3.2
+2026-10-26,Garden spider,Araneus diadematus,Spider,Fife,56.2,-3.2
+2026-10-26,Grey heron,Ardea cinerea,Bird,Inverness,57.5,-4.2
+2026-10-26,Heather,Calluna vulgaris,Plant,Inverness,57.6,-4.1
+2026-10-26,European robin,Erithacus rubecula,Bird,Edinburgh,56.0,-3.1
+2026-10-26,Eurasian otter,Lutra lutra,Mammal,Stirling,56.1,-3.8
+2026-10-26,Bladder wrack,Fucus vesiculosus,Seaweed and algae,Dumfries and Galloway,54.9,-4.1
+2026-10-26,Red squirrel,Sciurus vulgaris,Mammal,Orkney,59.1,-3.0
+2026-10-26,Bladder wrack,Fucus vesiculosus,Seaweed and algae,Glasgow,55.9,-4.3
+2026-10-26,Shaggy inkcap,Coprinus comatus,Fungus,Stirling,56.1,-3.9
+2026-10-26,Turkey tail,Trametes versicolor,Fungus,Glasgow,56.0,-4.3
+2026-10-25,Eurasian otter,Lutra lutra,Mammal,Stirling,56.1,-3.9
+2026-10-25,Turkey tail,Trametes versicolor,Fungus,Glasgow,56.0,-4.3
+2026-10-25,Fly agaric,Amanita muscaria,Fungus,Dundee,56.4,-3.0
+2026-10-25,Garden spider,Araneus diadematus,Spider,Glasgow,55.8,-4.2
+2026-10-25,Redwing,Turdus iliacus,Bird,Cairngorms,57.0,-3.6
+2026-10-25,Pink-footed goose,Anser brachyrhynchus,Bird,Dundee,56.5,-3.1
+2026-10-25,Common buzzard,Buteo buteo,Bird,Shetland,60.4,-1.3
+2026-10-25,Common frog,Rana temporaria,Amphibian,Cairngorms,57.1,-3.7
+2026-10-25,Common buzzard,Buteo buteo,Bird,Dundee,56.4,-3.0
+2026-10-25,Heather,Calluna vulgaris,Plant,Dundee,56.5,-2.9
+2026-10-25,Common ivy,Hedera helix,Plant,Fife,56.3,-3.2
+2026-10-25,Shaggy inkcap,Coprinus comatus,Fungus,Orkney,58.9,-3.0
+2026-10-25,Red admiral,Vanessa atalanta,Insect,Cairngorms,57.1,-3.6
+2026-10-25,Shaggy inkcap,Coprinus comatus,Fungus,Fife,56.1,-3.1
+2026-10-24,Shaggy inkcap,Coprinus comatus,Fungus,Orkney,59.0,-2.9
+2026-10-24,Common limpet,Patella vulgata,Mollusc,Edinburgh,55.8,-3.2
+2026-10-24,Redwing,Turdus iliacus,Bird,Edinburgh,55.9,-3.1
+2026-10-24,Red admiral,Vanessa atalanta,Insect,Dumfries and Galloway,55.0,-4.0
+2026-10-24,Grey heron,Ardea cinerea,Bird,Stirling,56.0,-3.9
+2026-10-24,Heather,Calluna vulgaris,Plant,Isle of Skye,57.2,-6.2
+2026-10-24,Common limpet,Patella vulgata,Mollusc,Dumfries and Galloway,54.9,-4.1
+2026-10-24,Roe deer,Capreolus capreolus,Mammal,Shetland,60.2,-1.3
+2026-10-24,Redwing,Turdus iliacus,Bird,Edinburgh,55.9,-3.2
+2026-10-24,Bladder wrack,Fucus vesiculosus,Seaweed and algae,Isle of Skye,57.3,-6.3
+2026-10-24,Common ivy,Hedera helix,Plant,Shetland,60.2,-1.3
+2026-10-24,Common buzzard,Buteo buteo,Bird,Orkney,59.1,-3.0
+2026-10-24,Common frog,Rana temporaria,Amphibian,Isle of Skye,57.2,-6.3
+2026-10-24,Grey heron,Ardea cinerea,Bird,Stirling,56.2,-3.9
+2026-10-23,Red deer,Cervus elaphus,Mammal,Isle of Skye,57.3,-6.2
+2026-10-23,Common limpet,Patella vulgata,Mollusc,Edinburgh,55.9,-3.3
+2026-10-23,Fly agaric,Amanita muscaria,Fungus,Dundee,56.5,-3.1
+2026-10-23,Heather,Calluna vulgaris,Plant,Aberdeen,57.2,-2.1
+2026-10-23,Common buzzard,Buteo buteo,Bird,Aberdeen,57.2,-2.1
+2026-10-23,Common limpet,Patella vulgata,Mollusc,Dumfries and Galloway,55.1,-4.0
+2026-10-23,Turkey tail,Trametes versicolor,Fungus,Cairngorms,57.2,-3.6
+2026-10-23,Red deer,Cervus elaphus,Mammal,Aberdeen,57.1,-2.1
+2026-10-23,Eurasian otter,Lutra lutra,Mammal,Shetland,60.4,-1.2
+2026-10-23,Grey seal,Halichoerus grypus,Mammal,Shetland,60.4,-1.3
+2026-10-23,Red squirrel,Sciurus vulgaris,Mammal,Glasgow,55.9,-4.2
+2026-10-23,Common frog,Rana temporaria,Amphibian,Inverness,57.6,-4.2
+2026-10-23,Common buzzard,Buteo buteo,Bird,Inverness,57.4,-4.1
+2026-10-23,Eurasian otter,Lutra lutra,Mammal,Glasgow,56.0,-4.2
+2026-10-22,Bladder wrack,Fucus vesiculosus,Seaweed and algae,Fife,56.3,-3.1
+2026-10-22,Bladder wrack,Fucus vesiculosus,Seaweed and algae,Dundee,56.6,-3.1
+2026-10-22,Fly agaric,Amanita muscaria,Fungus,Fife,56.2,-3.1
+2026-10-22,Pink-footed goose,Anser brachyrhynchus,Bird,Orkney,59.0,-3.0
