@@ -1,7 +1,7 @@
 # Data Detective v2 — Design
 
 Date: 2026-11-06
-Status: Draft for review
+Status: Approved and built (v2)
 
 ## 1. Purpose
 
@@ -21,7 +21,7 @@ Data Detective is a browser-based SQL learning tool for **Fourth Level Computing
 | Specified by user | Assumed (agreed during design) |
 |---|---|
 | Visual drag-and-drop SQL editor | Static site, GitHub Pages, sql.js |
-| At least 5 quests with random questions | 6 quests, ~6 questions each |
+| At least 5 quests with random questions; two further quests of 10 questions each | 8 quests: six of ~6 questions, two of 10 |
 | CSV upload queried with the visual editor | Marking compares query results |
 | Fourth Level learners | Replaces existing code in this repo |
 | SQL scope: core + sorting + COUNT/MIN/MAX/AVG + GROUP BY | SUM added (needed for totals in Chart Toppers) |
@@ -58,10 +58,9 @@ js/
   db.js                 sql.js loader; createTable(); run(sql) -> {columns, rows} | {error}
   query-model.js        Query object <-> SQL text; SQL text -> Query (parser for the supported subset)
   editor/
-    editor.js           Mode switch, shared state, teacher lock
-    blocks.js           Clause-slot UI
-    tiles.js            Free token-line UI
-    type.js             Text area with light syntax colouring
+    editor.js           Mode switch, shared state, teacher lock, and the Blocks / Tiles / Type views
+    palette.js          The tray of pieces and the value maker
+    chips.js            The label-tape piece element
     dnd.js              Pointer/touch drag + tap-to-place + keyboard placement
   quest-engine.js       Seeded RNG, question selection, marking, hints, stars
   marking.js            Result-set comparison and feedback messages
@@ -75,6 +74,8 @@ js/
     game-shop.js
     planet-hunters.js
     chart-toppers.js
+    wildlife-watch.js
+    sports-day.js
 samples/                Sample CSVs for My Data
 tests/                  Node test runner tests (node --test)
 ```
@@ -127,7 +128,7 @@ Each quest module exports:
 
 `tables` is an array so multi-table quests can be added later without engine changes. All v2 quests use exactly one table.
 
-### The six quests
+### The eight quests
 
 1. **The Missing Trophy** (detective) — table `visitors`: name, year_group, time_in, time_out, room, club, shoe_size. Culprit, time window and clue values randomised; data generated so exactly one person fits all clues. Skills: WHERE, AND/OR, comparisons on times, LIKE.
 2. **River Watch** (environmental/ethics) — table `readings`: site, date, nitrate, temperature, nearest_factory. One randomly chosen site/factory is the polluter. Skills: WHERE, AVG, MAX, GROUP BY, ORDER BY. Outro discussion: jobs vs environment; who should see this data.
@@ -135,10 +136,12 @@ Each quest module exports:
 4. **Game Shop** (themed) — table `games`: title, platform, genre, price, rating, age_rating. Skills: WHERE, ORDER BY, LIMIT, COUNT, AVG, GROUP BY.
 5. **Planet Hunters** (themed) — table `planets`: name, star, distance_ly, temperature_c, size_earths, year_found. Skills: MIN/MAX/AVG, ranges with AND.
 6. **Chart Toppers** (themed) — table `songs`: title, artist, genre, year, streams. Skills: GROUP BY, SUM, ORDER BY, LIMIT.
+7. **Wildlife Watch** (environmental/ethics, 10 questions) — table `sightings`: species, animal_type, habitat, site, year, number_seen, status. Skills: everything in scope, including DISTINCT, LIKE, SUM/AVG with GROUP BY. Outro discussion: rewilding vs farmland; who decides how land is used.
+8. **Sports Day** (themed, 10 questions) — table `results`: name, house, year_group, event, result, position. Skills: everything in scope, including LIKE on names, MIN for fastest times, COUNT/SUM of house points with GROUP BY.
 
 All data is fictional (no real people). Themed quests use a fixed base dataset; question parameters are randomised from values present in the data. Detective quests generate data per seed.
 
-Each quest has ~6 questions ordered from simple to combined. A play-through presents them in order; each question's parameters come from the seeded RNG. "New case" reseeds.
+Quests 1–6 have ~6 questions and quests 7–8 have 10, ordered from simple to combined. A play-through presents them in order; each question's parameters come from the seeded RNG. "New case" reseeds.
 
 ### Randomness
 - Seeded PRNG (mulberry32). Seed shown on screen as a short code (e.g. `RIVER-4821`) so a teacher can ask a pupil to share or replay a specific case.
