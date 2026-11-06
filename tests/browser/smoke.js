@@ -5,6 +5,7 @@ import assert from 'node:assert/strict';
 import { startQuest } from '../../js/quest-engine.js';
 import { findQuest } from '../../js/quests/index.js';
 import { makeRunner } from '../helpers.js';
+import { openMeteoHourly, openMeteoDaily, carbonRegional } from '../fixtures.js';
 
 const out = process.argv[2] || '.';
 const BASE = 'http://127.0.0.1:8765';
@@ -19,7 +20,11 @@ const check = async (name, fn) => {
 };
 
 const server = await startServer();
-const desktop = await launchBrowser({ width: 1280, height: 900 });
+const liveRoutes = {
+  'api.open-meteo.com': url => (url.includes('daily=') ? openMeteoDaily() : openMeteoHourly()),
+  'api.carbonintensity.org.uk': url => carbonRegional(url.endsWith('/1') ? 1 : 2, 'Scotland'),
+};
+const desktop = await launchBrowser({ width: 1280, height: 900, routes: liveRoutes });
 const p = desktop.page;
 
 await check('home page lists 8 quests', async () => {
@@ -123,7 +128,7 @@ await check('my data: sample loads, types toggle, table queries and exports', as
   await p.click('.samples button');
   await p.waitFor('!!document.querySelector(".type-toggle")');
   await p.screenshot(`${out}/mydata-preview.png`);
-  await p.click('.field-row .btn-primary');
+  await p.click('[aria-label="Check your data"] .field-row .btn-primary');
   await p.waitFor('!!document.querySelector("[data-zone=select]")');
   await p.drag(chip('favourite_subject field'), zone('select'));
   await p.drag('.palette .chip[aria-label="COUNT(*) function"]', zone('select'), { offsetX: 200 });
@@ -135,6 +140,47 @@ await check('my data: sample loads, types toggle, table queries and exports', as
   const disabled = await p.eval('document.querySelector(".result-panel .btn").disabled');
   assert.equal(disabled, false);
   await p.screenshot(`${out}/mydata-query.png`);
+});
+
+await check('live data: weather and electricity load and query', async () => {
+  liveRoutes.enabled = true;
+  await p.goto(`${BASE}/mydata.html`);
+  await p.waitFor('!!document.querySelector(".live-option")');
+  await p.eval(`document.querySelector('#live-place').value = 'Inverness'`);
+  await p.click('.live-option:nth-child(1) .btn-primary');
+  await p.waitFor('!!document.querySelector(".type-toggle")');
+  assert.equal(await p.eval('document.querySelector("#table-name").value'), 'weather_inverness');
+  assert.match(await p.eval('document.querySelector(".panel .credit").textContent'), /Open-Meteo/);
+  await p.screenshot(`${out}/live-preview.png`);
+  await p.click('[aria-label="Check your data"] .field-row .btn-primary');
+  await p.waitFor('!!document.querySelector("[data-zone=select]")');
+  assert.match(await p.eval('document.querySelector(".starters").textContent'), /windiest/);
+  await p.click('.live-option:nth-child(3) .btn-primary');
+  await p.waitFor('!!document.querySelector(".type-toggle")');
+  await p.click('[aria-label="Check your data"] .field-row .btn-primary');
+  await p.waitFor('document.querySelectorAll(".table-tabs .btn").length === 3');
+  await p.click('.mode-switch button:nth-child(3)');
+  await p.eval(`(() => { const t = document.querySelector('.code-box textarea'); t.value = "SELECT region, AVG(wind_pct) FROM electricity_scotland GROUP BY region"; t.dispatchEvent(new Event('input')); })()`);
+  await p.click('.editor-actions .btn-primary');
+  await p.waitFor('document.querySelectorAll(".result-panel tbody tr").length === 2');
+  await p.screenshot(`${out}/live-electricity.png`);
+});
+
+await check('live data: blocked service offers the saved example', async () => {
+  const saved = liveRoutes['api.open-meteo.com'];
+  liveRoutes['api.open-meteo.com'] = () => null;
+  try {
+    await p.goto(`${BASE}/mydata.html`);
+    await p.waitFor('!!document.querySelector(".live-option")');
+    await p.click('.live-option:nth-child(2) .btn-primary');
+    await p.waitFor('!!document.querySelector(".notice.bad button")');
+    assert.match(await p.eval('document.querySelector(".notice.bad").textContent'), /could not be reached/);
+    await p.click('.notice.bad button');
+    await p.waitFor('!!document.querySelector(".type-toggle")');
+    assert.match(await p.eval('document.querySelector(".panel .notice").textContent'), /saved example/);
+  } finally {
+    liveRoutes['api.open-meteo.com'] = saved;
+  }
 });
 
 await check('a full quest can be finished', async () => {

@@ -31,6 +31,14 @@ Pieces can be dragged with a mouse or finger, tapped then placed, or moved with 
 
 **My data** — pupils load their own CSV file, check whether each column is a number or text, and query it with the same editor. Three fictional sample files are included.
 
+**Live data** — also in My data, pupils can fetch real public data straight into a table:
+
+- *Weather this week*: hourly readings for the last 7 days in a chosen Scottish place ([Open-Meteo](https://open-meteo.com), CC BY 4.0).
+- *Weather around Scotland*: daily readings for the last 14 days in 11 places, from Lerwick to Dumfries (Open-Meteo).
+- *Scotland's electricity*: half-hourly carbon intensity and fuel mix for North and South Scotland over the last 2 days ([Carbon Intensity API](https://carbonintensity.org.uk), National Energy System Operator, CC BY 4.0).
+
+Each comes with questions to try. No account or key is needed, and only a request for public data is sent. If a school network blocks a service, pupils are offered a saved example instead (clearly labelled as an example, not real readings). Live data isn't marked — it's for exploring.
+
 ## For teachers
 
 - **Lock the editing mode** for a lesson by adding `?mode=` to the address: `quest.html?q=river-watch&mode=blocks`. Use `mode=blocks,tiles` to allow two modes.

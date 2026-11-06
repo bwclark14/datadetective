@@ -6,6 +6,7 @@ import { friendlyError } from '../marking.js';
 import { getPref, setPref } from '../progress.js';
 import { el, topbar, renderResult, params, fatal } from '../ui.js';
 import { makeRng } from '../rng.js';
+import { PLACES, SOURCES, fetchLive, weatherWeekStarters, WEATHER_SCOTLAND_STARTERS, ELECTRICITY_STARTERS } from '../live.js';
 
 const SAMPLES = [
   { file: 'class-survey.csv', label: 'Class survey' },
@@ -35,15 +36,36 @@ async function start() {
     el('div', { class: 'samples' }, SAMPLES.map(s => el('button', {
       class: 'btn btn-small', type: 'button', onclick: () => loadSample(s),
     }, s.label))));
+  const placeSelect = el('select', { id: 'live-place', class: 'place-select' },
+    PLACES.map(pl => el('option', { value: pl.name, selected: pl.name === 'Glasgow' ? true : null }, pl.name)));
+  const liveSection = el('section', { class: 'panel live', 'aria-label': 'Live data' },
+    el('h2', {}, 'Live data'),
+    el('p', {}, 'Fetch real, up-to-date public data. Only a request for public data is sent — nothing about you.'),
+    el('div', { class: 'live-options' },
+      el('div', { class: 'live-option' },
+        el('h3', {}, 'Weather this week'),
+        el('p', { class: 'muted' }, 'Every hour for the last 7 days: temperature, rain, wind, humidity and cloud.'),
+        el('div', { class: 'field-row' },
+          el('label', { for: 'live-place' }, 'Place'), placeSelect,
+          el('button', { class: 'btn btn-primary btn-small', type: 'button', onclick: () => loadLive('weatherWeek', { place: placeSelect.value }) }, 'Fetch weather'))),
+      el('div', { class: 'live-option' },
+        el('h3', {}, 'Weather around Scotland'),
+        el('p', { class: 'muted' }, `One row per day for the last 14 days in ${PLACES.length} places, from Lerwick to Dumfries.`),
+        el('button', { class: 'btn btn-primary btn-small', type: 'button', onclick: () => loadLive('weatherScotland') }, 'Fetch weather')),
+      el('div', { class: 'live-option' },
+        el('h3', {}, 'Scotland\'s electricity'),
+        el('p', { class: 'muted' }, 'Every half hour for the last 2 days: how green the electricity was, and how much came from wind, hydro, gas and more.'),
+        el('button', { class: 'btn btn-primary btn-small', type: 'button', onclick: () => loadLive('electricity') }, 'Fetch electricity data'))));
   const preview = el('div');
   const workspace = el('div');
+  const tableInfo = new Map();
 
   main.replaceChildren(
     el('section', { class: 'hero', style: 'padding-bottom:12px' },
       el('h1', {}, 'Ask questions of your own data.'),
-      el('p', { class: 'lede' }, 'Load a spreadsheet saved as CSV, check the column types, then query it with Blocks, Tiles or Type.'),
+      el('p', { class: 'lede' }, 'Load a spreadsheet saved as CSV, or fetch live weather and electricity data. Check the column types, then query it with Blocks, Tiles or Type.'),
       el('p', { class: 'notice' }, 'Your file is read on this device and never uploaded. It disappears when you close the tab. Don\'t use files with personal details about real people.')),
-    dropzone, status, preview, workspace);
+    dropzone, liveSection, status, preview, workspace);
 
   fileInput.addEventListener('change', () => { if (fileInput.files[0]) readFile(fileInput.files[0]); fileInput.value = ''; });
   dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.classList.add('over'); });
@@ -76,12 +98,46 @@ async function start() {
     }
   }
 
-  function showPreview(fileName, text, bytes) {
+  async function loadLive(sourceId, opts = {}) {
+    const source = SOURCES[sourceId];
+    say(`Fetching ${source.label.toLowerCase()}…`);
+    try {
+      const table = await fetchLive(sourceId, opts);
+      if (!table.rows.length) throw new Error('The service sent back no readings.');
+      const time = new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+      showPreview(`${table.name}.csv`, toCSV(table.columns, table.rows), undefined, {
+        name: table.name, credit: source.credit, starters: table.starters,
+        note: `Live data fetched at ${time} today.`,
+      });
+    } catch (e) {
+      status.replaceChildren(el('div', { class: 'notice bad', role: 'alert' },
+        el('p', {}, `Couldn't fetch ${source.label.toLowerCase()}: ${e.message}`),
+        el('button', { class: 'btn btn-small', type: 'button', onclick: () => loadExample(sourceId) }, 'Use the saved example instead')));
+    }
+  }
+
+  async function loadExample(sourceId) {
+    const source = SOURCES[sourceId];
+    try {
+      const res = await fetch(source.example);
+      if (!res.ok) throw new Error(res.statusText);
+      const starters = { weatherWeek: weatherWeekStarters('Glasgow'), weatherScotland: WEATHER_SCOTLAND_STARTERS, electricity: ELECTRICITY_STARTERS }[sourceId];
+      const name = { weatherWeek: 'weather_example', weatherScotland: 'weather_scotland_example', electricity: 'electricity_example' }[sourceId];
+      showPreview(`${name}.csv`, await res.text(), undefined, {
+        name, starters,
+        note: 'This is a saved example made to look like real data — not today\'s readings.',
+      });
+    } catch {
+      say('The saved example could not be loaded either. Check your connection and try again.', 'bad');
+    }
+  }
+
+  function showPreview(fileName, text, bytes, meta = {}) {
     const prepared = prepareCSV(text, { bytes });
     if (!prepared.ok) { say(prepared.error, 'bad'); preview.replaceChildren(); return; }
     say('');
     const types = prepared.types.slice();
-    const nameInput = el('input', { type: 'text', value: uniqueTableName(tableNameFromFile(fileName)), id: 'table-name', 'aria-describedby': 'table-name-help' });
+    const nameInput = el('input', { type: 'text', value: uniqueTableName(meta.name || tableNameFromFile(fileName)), id: 'table-name', 'aria-describedby': 'table-name-help' });
     const tableBox = el('div');
 
     const drawTable = () => {
@@ -105,6 +161,7 @@ async function start() {
 
     preview.replaceChildren(el('section', { class: 'panel', 'aria-label': 'Check your data' },
       el('h2', {}, 'Check your data'),
+      meta.note ? el('p', { class: 'notice' }, meta.note, meta.credit ? el('span', { class: 'credit' }, meta.credit) : null) : null,
       el('p', {}, `${prepared.rows.length} rows and ${prepared.names.length} columns. Here are the first 10 rows. Check each column's type: `,
         el('strong', {}, 'Number'), ' columns can be added up, averaged and compared by size; ',
         el('strong', {}, 'Text'), ' columns are compared letter by letter — so "10" comes before "9".'),
@@ -114,7 +171,7 @@ async function start() {
         el('label', { for: 'table-name' }, 'Table name'), nameInput,
         el('button', {
           class: 'btn btn-primary', type: 'button',
-          onclick: () => createTable(prepared, types, nameInput.value),
+          onclick: () => createTable(prepared, types, nameInput.value, meta),
         }, 'Create table'),
         el('button', { class: 'btn btn-quiet', type: 'button', onclick: () => preview.replaceChildren() }, 'Cancel')),
       el('p', { class: 'muted', id: 'table-name-help' }, 'Use letters, numbers and underscores only.')));
@@ -128,8 +185,9 @@ async function start() {
     return n;
   }
 
-  function createTable(prepared, types, rawName) {
+  function createTable(prepared, types, rawName, meta = {}) {
     const name = sanitizeName(rawName, 'my_data');
+    tableInfo.set(name, meta);
     const { def, blanked } = buildTable(name, prepared, types);
     try { db.load([def]); } catch (e) { say(`The table couldn't be created: ${e.message}`, 'bad'); return; }
     preview.replaceChildren();
@@ -155,9 +213,10 @@ async function start() {
       }, `Remove ${def.name}`));
 
     const rng = makeRng(def.rows.length + def.columns.length);
+    const info = tableInfo.get(def.name) || {};
     const starters = el('section', { class: 'panel starters' },
       el('h2', {}, 'Questions to try'),
-      el('ul', {}, starterChallenges(def, list => rng.pick(list)).map(q => el('li', { html: q }))));
+      el('ul', {}, (info.starters || starterChallenges(def, list => rng.pick(list))).map(q => el('li', { html: q }))));
 
     const editorHost = el('div', { class: 'panel' });
     const resultBox = el('div', {}, el('p', { class: 'muted' }, 'Run your query to see what it finds.'));
@@ -167,7 +226,8 @@ async function start() {
       el('div', { class: 'case-side' },
         el('section', { class: 'panel' }, el('h2', {}, 'Your tables'), tabs,
           el('p', { class: 'columns-list' }, def.columns.map(c => `${c.name} (${c.type})`).join(', ')),
-          el('p', { class: 'muted' }, `${def.rows.length} records.`)),
+          el('p', { class: 'muted' }, `${def.rows.length} records.`),
+          info.credit ? el('p', { class: 'credit' }, info.credit) : null),
         starters),
       el('div', { style: 'display:grid;gap:16px' }, editorHost,
         el('section', { class: 'panel result-panel', 'aria-live': 'polite' }, el('h2', {}, 'Results'), resultBox, exportBtn))));
