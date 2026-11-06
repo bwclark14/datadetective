@@ -83,6 +83,7 @@ function render() {
         el('dt', {}, 'Editing modes'), el('dd', {}, 'Pupils can switch between Blocks, Tiles and Type. To fix the mode for a lesson, add ?mode=blocks (or tiles, type) to the page address — e.g. quest.html?q=river-watch&mode=blocks. Use ?mode=blocks,tiles to allow two.'),
         el('dt', {}, 'Case codes'), el('dd', {}, 'Each quest shows a code like RIVER-4821. Entering it here reopens exactly that case, so a pupil can show you their version.'),
         el('dt', {}, 'Marking'), el('dd', {}, 'Answers are marked by comparing results with a model answer, so any correct query passes. Hints reduce the stars available.'),
+        el('dt', {}, 'Results card'), el('dd', {}, 'At the end of each quest pupils get a card showing each answer, the attempts it took and the hints used. They can share it, save it as a picture, or copy it as text to send to you.'),
         el('dt', {}, 'Privacy'), el('dd', {}, 'Everything runs in the browser. No accounts, nothing uploaded. Stars are saved in this browser only.'))),
   );
 }
