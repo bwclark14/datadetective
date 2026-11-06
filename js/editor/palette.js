@@ -13,8 +13,13 @@ export function parseValueInput(raw) {
   return { t: 'value', value: text, vtype: 'text' };
 }
 
-export function renderPalette({ mode, fields, tables, values, dnd, onAddValue }) {
+// `features` limits which pieces are offered (see js/levels.js); undefined means everything.
+export function renderPalette({ mode, fields, tables, values, dnd, onAddValue, features }) {
   const chips = paletteChips(fields, tables);
+  const has = f => !features || features.has(f);
+  const functions = chips.functions.filter(c => (c.t === 'distinct' ? has('distinct') : has('functions')));
+  const keywordFeature = { 'ORDER BY': 'orderBy', LIMIT: 'limit', 'GROUP BY': 'groupBy' };
+  const keywords = chips.keywords.filter(c => c.t !== 'kw' || !keywordFeature[c.kw] || has(keywordFeature[c.kw]));
   const group = (label, list) => el('div', { class: 'palette-group', role: 'group', 'aria-label': label },
     el('span', { class: 'label' }, label),
     list.map(chip => chipElement(chip, { dnd, payload: { chip } })));
@@ -30,13 +35,13 @@ export function renderPalette({ mode, fields, tables, values, dnd, onAddValue })
   };
 
   return el('div', { class: 'palette', 'aria-label': 'Query pieces' },
-    mode === 'tiles' ? group('Keywords', chips.keywords) : null,
+    mode === 'tiles' ? group('Keywords', keywords) : null,
     group('Table', chips.tables),
     group('Fields', chips.fields),
-    group('Functions', chips.functions),
+    functions.length ? group(has('functions') ? 'Functions' : 'Extras', functions) : null,
     group('Compare', chips.compare),
     group('Logic', chips.logic),
-    group('Sort', chips.sort),
+    has('orderBy') ? group('Sort', chips.sort) : null,
     el('div', { class: 'palette-group' },
       el('span', { class: 'label' }, 'Values'),
       el('div', { class: 'value-maker' },

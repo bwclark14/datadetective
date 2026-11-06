@@ -118,6 +118,28 @@ await check('locked mode hides the switch', async () => {
   assert.equal(await p.eval('!!document.querySelector(".mode-switch")'), false);
 });
 
+await check('pieces match the quest level', async () => {
+  const pieces = async () => p.eval(`({
+    sort: !!document.querySelector('.palette [aria-label="Sort"]'),
+    count: !!document.querySelector('.palette .chip[aria-label="COUNT(*) function"]'),
+    distinct: !!document.querySelector('.palette .chip[aria-label="DISTINCT DISTINCT"]'),
+    addButtons: [...document.querySelectorAll('.add-clauses button')].map(b => b.textContent),
+  })`);
+  await p.goto(`${BASE}/quest.html?q=missing-trophy&seed=3&mode=blocks`);
+  await p.waitFor('!!document.querySelector(".palette")');
+  let got = await pieces();
+  assert.deepEqual(got, { sort: false, count: false, distinct: false, addButtons: [] }, 'level 1 is SELECT/FROM/WHERE only');
+  assert.match(await p.eval('document.querySelector(".level-line").textContent'), /Level 1/);
+  await p.goto(`${BASE}/quest.html?q=game-shop&seed=3&mode=blocks`);
+  await p.waitFor('!!document.querySelector(".palette")');
+  got = await pieces();
+  assert.deepEqual(got, { sort: true, count: false, distinct: false, addButtons: ['+ ORDER BY', '+ LIMIT'] }, 'level 3');
+  await p.goto(`${BASE}/quest.html?q=wildlife-watch&seed=3&mode=blocks`);
+  await p.waitFor('!!document.querySelector(".palette")');
+  got = await pieces();
+  assert.deepEqual(got, { sort: true, count: true, distinct: true, addButtons: ['+ GROUP BY', '+ ORDER BY', '+ LIMIT'] }, 'level 6');
+});
+
 await check('every quest page opens without errors', async () => {
   for (const id of ['missing-trophy', 'river-watch', 'phantom-login', 'game-shop', 'planet-hunters', 'chart-toppers', 'wildlife-watch', 'sports-day']) {
     await p.goto(`${BASE}/quest.html?q=${id}&seed=77`);

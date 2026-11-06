@@ -11,7 +11,7 @@ export default {
   kind: 'Detective case',
   colour: 'amber',
   blurb: 'The football trophy has vanished from the school office. Use the visitor log to find out who took it.',
-  skills: ['WHERE', 'AND', 'ORDER BY', 'COUNT'],
+  level: 1,
 
   generate(rng) {
     const names = uniqueNames(rng, 34);
@@ -82,13 +82,12 @@ export default {
     {
       id: 'times',
       build: () => ({
-        prompt: `Show the ${f('name')}, ${f('time_in')} and ${f('time_out')} of Office visitors, with the <em>earliest arrival first</em>.`,
-        answer: `SELECT name, time_in, time_out FROM visitors WHERE room = 'Office' ORDER BY time_in`,
-        orderMatters: true,
+        prompt: `Too much information! Show <em>only</em> the ${f('name')}, ${f('time_in')} and ${f('time_out')} of Office visitors.`,
+        answer: `SELECT name, time_in, time_out FROM visitors WHERE room = 'Office'`,
         hints: [
-          'Choose three fields after SELECT, then sort with ORDER BY.',
-          `Sort by ${f('time_in')}. Smallest first is ascending (ASC), which is the default.`,
-          `… WHERE room = 'Office' ORDER BY time_in`,
+          'Instead of *, list the fields you want after SELECT.',
+          'Separate the field names with commas.',
+          `SELECT name, time_in, time_out FROM visitors WHERE room = 'Office'`,
         ],
       }),
     },
@@ -108,12 +107,12 @@ export default {
     {
       id: 'club',
       build: (rng, ctx) => ({
-        prompt: `A witness saw someone leave with a ${v(ctx.club)} kit bag. <em>How many</em> Office visitors are in the ${ctx.club} club?`,
-        answer: `SELECT COUNT(*) FROM visitors WHERE room = 'Office' AND club = ${sq(ctx.club)}`,
+        prompt: `A witness saw someone leave with a ${v(ctx.club)} kit bag. Show the ${f('name')} of every Office visitor in the ${ctx.club} club.`,
+        answer: `SELECT name FROM visitors WHERE room = 'Office' AND club = ${sq(ctx.club)}`,
         hints: [
-          'Counting needs COUNT(*) in the SELECT part.',
-          `Two conditions: the ${f('room')} and the ${f('club')}.`,
-          `SELECT COUNT(*) FROM visitors WHERE room = 'Office' AND club = …`,
+          'You need two conditions joined with AND.',
+          `One condition on ${f('room')} and one on ${f('club')}. Both are text, so use quotes.`,
+          `SELECT name FROM visitors WHERE room = 'Office' AND club = '${ctx.club}'`,
         ],
       }),
     },

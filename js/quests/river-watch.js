@@ -12,7 +12,7 @@ export default {
   kind: 'Environment & ethics',
   colour: 'teal',
   blurb: 'Fish are dying. Use water sensor readings to find the source of the pollution — then decide what should happen.',
-  skills: ['WHERE', 'ORDER BY', 'MAX', 'AVG', 'GROUP BY'],
+  level: 6,
 
   generate(rng) {
     const river = rng.pick(RIVERS);

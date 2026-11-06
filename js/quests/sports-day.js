@@ -20,7 +20,7 @@ export default {
   kind: 'Mission',
   colour: 'orange',
   blurb: 'The PE department has the results of every race and jump. Work out the winners — and which house takes the cup.',
-  skills: ['WHERE', 'AND', 'OR', 'LIKE', 'DISTINCT', 'MIN', 'MAX', 'AVG', 'COUNT', 'GROUP BY', 'ORDER BY', 'LIMIT'],
+  level: 5,
 
   generate(rng) {
     const pupils = {};
@@ -42,7 +42,7 @@ export default {
           used.add(`${event}:${r}`);
           return { p, r };
         }).sort((a, b) => (lowerBetter ? a.r - b.r : b.r - a.r));
-        results.forEach(({ p, r }, i) => rows.push([p.name, p.house, y, event, r, i + 1]));
+        results.forEach(({ p, r }, i) => rows.push([p.name, p.house, y, event, r, i + 1, Math.max(0, 3 - i)]));
       }
     }
     const names = rows.map(r => r[0]);
@@ -53,6 +53,7 @@ export default {
         columns: [
           { name: 'name', type: 'text' }, { name: 'house', type: 'text' }, { name: 'year_group', type: 'text' },
           { name: 'event', type: 'text' }, { name: 'result', type: 'number' }, { name: 'position', type: 'number' },
+          { name: 'points', type: 'number' },
         ],
         rows: rng.shuffle(rows),
       }],
@@ -63,7 +64,7 @@ export default {
   intro: () => `<p>Sports Day is over and the PE department needs help. Every result is in the ${t('results')} table.</p>
     <p>For races (100m, 200m, 800m), ${f('result')} is a time in <strong>seconds</strong> — lower is better.
     For jumps and Shot Put it's a distance in <strong>metres</strong> — higher is better. ${f('position')} is where the
-    pupil finished in their year group (1 = first).</p>`,
+    pupil finished in their year group (1 = first), and ${f('points')} is what they won for their house: 3 for first, 2 for second, 1 for third.</p>`,
 
   questions: [
     {
@@ -134,19 +135,26 @@ export default {
     },
     {
       id: 'house-wins',
-      build: () => ({
-        prompt: `The House Cup goes to the house with the most wins. Show each ${f('house')} and how many <em>first places</em> it got.`,
-        answer: 'SELECT house, COUNT(*) FROM results WHERE position = 1 GROUP BY house',
-        hints: ['Filter for winners, then group and count.', 'WHERE position = 1 GROUP BY house', 'SELECT house, COUNT(*) FROM results WHERE position = 1 GROUP BY house'],
-      }),
+      build: rng => {
+        const h = rng.pick(HOUSES);
+        return {
+          prompt: `The House Cup goes to the house with the most wins. How many <em>first places</em> did ${v(h)} get? Show one number.`,
+          answer: `SELECT COUNT(*) FROM results WHERE house = ${sq(h)} AND position = 1`,
+          check: res => res.rows[0][0] > 0,
+          hints: ['COUNT(*) counts the rows that match your WHERE.', `house = '${h}' AND position = 1`, `SELECT COUNT(*) FROM results WHERE house = '${h}' AND position = 1`],
+        };
+      },
     },
     {
       id: 'avg-800',
-      build: () => ({
-        prompt: `Do older pupils run faster? Show each ${f('year_group')} with the <em>average</em> 800m time.`,
-        answer: `SELECT year_group, AVG(result) FROM results WHERE event = '800m' GROUP BY year_group`,
-        hints: ['AVG( ) with WHERE and GROUP BY.', `WHERE event = '800m' GROUP BY year_group`, `SELECT year_group, AVG(result) FROM results WHERE event = '800m' GROUP BY year_group`],
-      }),
+      build: rng => {
+        const y = rng.pick(YEARS);
+        return {
+          prompt: `What was the <em>average</em> 800m time for ${v(y)}? Show one number.`,
+          answer: `SELECT AVG(result) FROM results WHERE event = '800m' AND year_group = ${sq(y)}`,
+          hints: ['AVG( ) works out the mean.', `AVG(result) with event = '800m' AND year_group = '${y}'`, `SELECT AVG(result) FROM results WHERE event = '800m' AND year_group = '${y}'`],
+        };
+      },
     },
     {
       id: 'top3',
@@ -163,18 +171,13 @@ export default {
       },
     },
     {
-      id: 'medals',
+      id: 'house-points',
       build: rng => {
-        const h = rng.pick(HOUSES), y = rng.pick(YEARS);
+        const h = rng.pick(HOUSES);
         return {
-          prompt: `${v(h)} house is making a display. Show the ${f('name')}, ${f('event')} and ${f('position')} of every ${v(y)} ${h} pupil who finished
-            in the <em>top 3</em> of a <em>running</em> event (100m, 200m or 800m).`,
-          answer: `SELECT name, event, position FROM results WHERE house = ${sq(h)} AND year_group = ${sq(y)} AND position <= 3 AND (event = '100m' OR event = '200m' OR event = '800m')`,
-          hints: [
-            'Use AND for the house, year and position, and OR for the events — inside brackets.',
-            `position <= 3 AND (event = '100m' OR event = '200m' OR event = '800m')`,
-            `SELECT name, event, position FROM results WHERE house = '${h}' AND year_group = '${y}' AND position <= 3 AND (event = '100m' OR event = '200m' OR event = '800m')`,
-          ],
+          prompt: `The House Cup is decided by points. How many ${f('points')} did ${v(h)} score <em>in total</em>? Show one number.`,
+          answer: `SELECT SUM(points) FROM results WHERE house = ${sq(h)}`,
+          hints: ['SUM( ) adds up all the values in a field.', `SUM(points) with house = '${h}'`, `SELECT SUM(points) FROM results WHERE house = '${h}'`],
         };
       },
     },

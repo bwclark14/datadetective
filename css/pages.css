@@ -145,3 +145,11 @@ details.peek .results-wrap { max-height: 260px; }
   .about-facts, .about-columns { grid-template-columns: 1fr; }
   .about-facts dd, .about-columns dd { margin-bottom: 6px; }
 }
+
+/* ---------- Levels ---------- */
+.level-line { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 0; font-size: .9rem; color: var(--ink-soft); }
+.level-badge {
+  display: inline-block; padding: 2px 8px; border-radius: 3px; background: var(--tape-yellow); color: #1b2a38;
+  font: 600 .8rem var(--font-mono);
+}
+.quest-list { counter-reset: none; }

@@ -11,7 +11,7 @@ export default {
   kind: 'Cyber detective case',
   colour: 'violet',
   blurb: 'Someone has been trying to break into a teacher\'s account. Trace the attempts through the network log.',
-  skills: ['WHERE', 'COUNT', 'GROUP BY', 'DISTINCT', 'ORDER BY'],
+  level: 4,
 
   generate(rng) {
     const target = rng.pick(STAFF);
@@ -87,51 +87,65 @@ export default {
       build: rng => {
         const day = rng.pick(DAYS);
         return {
-          prompt: `How many <em>failed</em> logins were there on ${v(day)}? Show one number.`,
-          answer: `SELECT COUNT(*) FROM logins WHERE success = 'no' AND day = ${sq(day)}`,
-          check: res => res.rows[0][0] > 0,
+          prompt: `Show the ${f('username')}, ${f('device')} and ${f('time')} of every <em>failed</em> login on ${v(day)}, in time order.`,
+          answer: `SELECT username, device, time FROM logins WHERE success = 'no' AND day = ${sq(day)} ORDER BY time`,
+          orderMatters: true,
+          check: res => res.rows.length > 1 && new Set(res.rows.map(r => r[2])).size === res.rows.length,
           hints: [
-            'Use COUNT(*) and two conditions.',
-            `Failed means ${f('success')} = 'no'.`,
-            `SELECT COUNT(*) FROM logins WHERE success = 'no' AND day = '${day}'`,
+            `Failed means ${f('success')} = 'no'. Join two conditions with AND.`,
+            'Times are written like 12:30, so sorting them puts them in time order.',
+            `SELECT username, device, time FROM logins WHERE success = 'no' AND day = '${day}' ORDER BY time`,
           ],
         };
       },
     },
     {
-      id: 'timeline',
+      id: 'first-tries',
       build: (rng, ctx) => ({
-        prompt: `Show the ${f('device')} and ${f('time')} of every failed login on ${ctx.target}'s account on ${v(ctx.attackDay)}, in <em>time order</em>.`,
-        answer: `SELECT device, time FROM logins WHERE username = ${sq(ctx.target)} AND success = 'no' AND day = ${sq(ctx.attackDay)} ORDER BY time`,
+        prompt: `When did the attack start? Show the ${f('device')} and ${f('time')} of the <em>first 3</em> failed logins on ${ctx.target}'s account on ${v(ctx.attackDay)}.`,
+        answer: `SELECT device, time FROM logins WHERE username = ${sq(ctx.target)} AND success = 'no' AND day = ${sq(ctx.attackDay)} ORDER BY time LIMIT 3`,
         orderMatters: true,
         hints: [
-          'Three conditions joined with AND, then ORDER BY.',
-          `Conditions on ${f('username')}, ${f('success')} and ${f('day')}.`,
-          `… WHERE username = '${ctx.target}' AND success = 'no' AND day = '${ctx.attackDay}' ORDER BY time`,
+          'Three conditions, then sort by time and keep 3 rows.',
+          'ORDER BY time LIMIT 3 gives the earliest three.',
+          `… WHERE username = '${ctx.target}' AND success = 'no' AND day = '${ctx.attackDay}' ORDER BY time LIMIT 3`,
         ],
       }),
     },
     {
-      id: 'per-device',
+      id: 'fail-devices',
       build: () => ({
-        prompt: `Show each ${f('device')} with the <em>number</em> of failed logins made on it all week.`,
-        answer: `SELECT device, COUNT(*) FROM logins WHERE success = 'no' GROUP BY device`,
+        prompt: `Which devices had <em>any</em> failed login this week? Show each ${f('device')} only <em>once</em>.`,
+        answer: `SELECT DISTINCT device FROM logins WHERE success = 'no'`,
         hints: [
-          'Filter, group and count.',
-          `SELECT device, COUNT(*) … GROUP BY device`,
-          `SELECT device, COUNT(*) FROM logins WHERE success = 'no' GROUP BY device`,
+          'Without help, a device appears once for every failed login. DISTINCT removes repeats.',
+          'DISTINCT goes straight after SELECT: SELECT DISTINCT device …',
+          `SELECT DISTINCT device FROM logins WHERE success = 'no'`,
         ],
       }),
     },
     {
-      id: 'distinct',
+      id: 'target-devices',
       build: (rng, ctx) => ({
-        prompt: `Show a list of the <em>different</em> devices that had a failed login on ${ctx.target}'s account. Each device should appear once.`,
-        answer: `SELECT DISTINCT device FROM logins WHERE username = ${sq(ctx.target)} AND success = 'no'`,
+        prompt: `Show a list of the <em>different</em> devices used for failed logins on ${ctx.target}'s account, in alphabetical order.`,
+        answer: `SELECT DISTINCT device FROM logins WHERE username = ${sq(ctx.target)} AND success = 'no' ORDER BY device`,
+        orderMatters: true,
         hints: [
-          'DISTINCT removes repeated rows.',
-          'SELECT DISTINCT device …',
-          `SELECT DISTINCT device FROM logins WHERE username = '${ctx.target}' AND success = 'no'`,
+          'DISTINCT removes repeats; ORDER BY sorts.',
+          `SELECT DISTINCT device … ORDER BY device`,
+          `SELECT DISTINCT device FROM logins WHERE username = '${ctx.target}' AND success = 'no' ORDER BY device`,
+        ],
+      }),
+    },
+    {
+      id: 'device-users',
+      build: (rng, ctx) => ({
+        prompt: `Who has used ${v(ctx.attackDevice)} this week? Show each ${f('username')} once.`,
+        answer: `SELECT DISTINCT username FROM logins WHERE device = ${sq(ctx.attackDevice)}`,
+        hints: [
+          'DISTINCT again, with a WHERE on the device.',
+          `SELECT DISTINCT username … WHERE device = '${ctx.attackDevice}'`,
+          `SELECT DISTINCT username FROM logins WHERE device = '${ctx.attackDevice}'`,
         ],
       }),
     },

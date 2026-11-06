@@ -32,6 +32,7 @@ const PLACEHOLDER = {
   limit: 'Drop a number value',
 };
 const OPTIONAL = ['where', 'groupBy', 'orderBy', 'limit'];
+const CLAUSE_FEATURE = { groupBy: 'groupBy', orderBy: 'orderBy', limit: 'limit' };
 
 function queryToTiles(q) {
   const tiles = [];
@@ -59,6 +60,8 @@ function queryToTiles(q) {
  */
 export function createEditor(host, opts) {
   const allowed = (opts.modes && opts.modes.length ? opts.modes : MODES.map(m => m.id));
+  // opts.features: a Set of extra SQL features this activity allows (js/levels.js). Undefined = all.
+  const clauseAllowed = c => !opts.features || !CLAUSE_FEATURE[c] || opts.features.has(CLAUSE_FEATURE[c]);
   const state = {
     mode: allowed.includes(opts.mode) ? opts.mode : allowed[0],
     query: emptyQuery(),
@@ -175,7 +178,7 @@ export function createEditor(host, opts) {
 
   function renderBlocks() {
     const q = state.query;
-    const rows = CLAUSES.filter(c => !OPTIONAL.includes(c) || state.open.has(c) || q[c].length).map(clause => {
+    const rows = CLAUSES.filter(c => q[c].length || (clauseAllowed(c) && (!OPTIONAL.includes(c) || state.open.has(c)))).map(clause => {
       const zone = el('div', {
         class: 'zone', 'data-zone': clause, 'data-placeholder': PLACEHOLDER[clause],
         tabindex: '0', role: 'group', 'aria-label': `${CLAUSE_LABEL[clause]}: ${PLACEHOLDER[clause]}`,
@@ -190,7 +193,7 @@ export function createEditor(host, opts) {
         : null;
       return el('div', { class: 'clause' }, el('div', { class: 'clause-name' }, closer, CLAUSE_LABEL[clause]), zone);
     });
-    const hidden = OPTIONAL.filter(c => !state.open.has(c) && !q[c].length);
+    const hidden = OPTIONAL.filter(c => clauseAllowed(c) && !state.open.has(c) && !q[c].length);
     return el('div', {},
       el('div', { class: 'clauses' }, rows),
       hidden.length ? el('div', { class: 'add-clauses' }, hidden.map(c =>
@@ -230,7 +233,7 @@ export function createEditor(host, opts) {
     const tableHelp = state.tables.map(t => `${t.name}: ${t.columns.map(c => c.name).join(', ')}`).join('; ');
     return el('div', {},
       el('div', { class: 'code-box' }, layer, area),
-      el('p', { class: 'palette-tip' }, `Fields in ${tableHelp}. Press Ctrl + Enter to run.`));
+      el('p', { class: 'palette-tip' }, `Fields in ${tableHelp}.${opts.featureText ? ` This activity uses ${opts.featureText}.` : ''} Press Ctrl + Enter to run.`));
   }
 
   function render() {
@@ -250,7 +253,7 @@ export function createEditor(host, opts) {
       : null;
     const head = el('div', { class: 'editor-head' }, el('h2', {}, 'Build your query'), modeSwitch);
     const palette = state.mode === 'type' ? null : renderPalette({
-      mode: state.mode, fields: fields(), tables: state.tables, values: state.values, dnd,
+      mode: state.mode, fields: fields(), tables: state.tables, values: state.values, dnd, features: opts.features,
       onAddValue: chip => {
         state.values = [chip, ...state.values.filter(v => chipText(v) !== chipText(chip))].slice(0, 12);
         render();

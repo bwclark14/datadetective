@@ -35,7 +35,7 @@ export default {
   kind: 'Mission',
   colour: 'indigo',
   blurb: 'Mission control needs a new world to explore. Search the catalogue of planets beyond our solar system.',
-  skills: ['WHERE', 'AND', 'MAX', 'AVG', 'COUNT', 'ORDER BY'],
+  level: 1,
 
   generate() {
     return {
@@ -69,49 +69,52 @@ export default {
       },
     },
     {
-      id: 'hottest',
-      build: () => ({
-        prompt: 'What is the <em>highest</em> temperature of any planet in the catalogue? Show one number.',
-        answer: 'SELECT MAX(temperature_c) FROM planets',
-        hints: ['There\'s an aggregate for the biggest value.', 'MAX(temperature_c)', 'SELECT MAX(temperature_c) FROM planets'],
-      }),
+      id: 'star',
+      build: (rng, ctx) => {
+        const s = rng.pick(ctx.stars);
+        return {
+          prompt: `The telescope team is studying the star ${v(s)}. Show every field for the planets that orbit it.`,
+          answer: `SELECT * FROM planets WHERE star = ${sq(s)}`,
+          hints: ['Filter on the star field.', `${f('star')} is text, so put the value in quotes.`, `SELECT * FROM planets WHERE star = '${s}'`],
+        };
+      },
     },
     {
       id: 'water',
       build: () => ({
         prompt: `Life as we know it needs liquid water, between ${v('0')} and ${v('100')} °C. Show the ${f('name')} and ${f('temperature_c')} of planets in that range.`,
         answer: 'SELECT name, temperature_c FROM planets WHERE temperature_c > 0 AND temperature_c < 100',
-        hints: ['You need two conditions on the same field.', 'temperature_c > 0 AND temperature_c < 100', 'SELECT name, temperature_c FROM planets WHERE temperature_c > 0 AND temperature_c < 100'],
+        hints: ['You need two conditions on the same field, joined with AND.', 'temperature_c > 0 AND temperature_c < 100', 'SELECT name, temperature_c FROM planets WHERE temperature_c > 0 AND temperature_c < 100'],
       }),
     },
     {
-      id: 'avg-size',
+      id: 'extreme',
       build: rng => {
-        const y = rng.pick([2014, 2016, 2018, 2020]);
+        const hot = rng.pick([300, 400, 500]), cold = rng.pick([-100, -150]);
         return {
-          prompt: `Are newer telescopes finding smaller planets? Show the <em>average</em> ${f('size_earths')} of planets found after ${v(y)} (not including ${y}).`,
-          answer: `SELECT AVG(size_earths) FROM planets WHERE year_found > ${y}`,
-          hints: ['AVG( ) with a WHERE.', `year_found > ${y}`, `SELECT AVG(size_earths) FROM planets WHERE year_found > ${y}`],
+          prompt: `Some planets are far too dangerous. Show the ${f('name')} and ${f('temperature_c')} of planets that are <em>either</em> hotter than ${v(`${hot} °C`)} <em>or</em> colder than ${v(`${cold} °C`)}.`,
+          answer: `SELECT name, temperature_c FROM planets WHERE temperature_c > ${hot} OR temperature_c < ${cold}`,
+          hints: ['"Either … or" means OR.', `temperature_c > ${hot} OR temperature_c < ${cold}`, `SELECT name, temperature_c FROM planets WHERE temperature_c > ${hot} OR temperature_c < ${cold}`],
         };
       },
     },
     {
-      id: 'per-star',
+      id: 'first',
       build: () => ({
-        prompt: `Show each ${f('star')} and <em>how many</em> planets orbit it.`,
-        answer: 'SELECT star, COUNT(*) FROM planets GROUP BY star',
-        hints: ['COUNT(*) with GROUP BY.', 'SELECT star, COUNT(*) …', 'SELECT star, COUNT(*) FROM planets GROUP BY star'],
+        prompt: `A planet's name is its star's name plus a letter. The first planet found around a star always gets the letter ${v('b')}.
+          Show the ${f('name')} and ${f('year_found')} of every planet whose name <em>ends</em> in b.`,
+        answer: `SELECT name, year_found FROM planets WHERE name LIKE '%b'`,
+        hints: ['LIKE matches patterns. % stands for "anything".', `'%b' means anything, then b at the very end.`, `SELECT name, year_found FROM planets WHERE name LIKE '%b'`],
       }),
     },
     {
-      id: 'system',
+      id: 'not-star',
       build: (rng, ctx) => {
-        const s = rng.pick(ctx.stars);
+        const s = rng.pick(ctx.stars), d = rng.pick([100, 150, 250]);
         return {
-          prompt: `Show the ${f('name')} and ${f('size_earths')} of the planets around ${v(s)}, <em>biggest first</em>.`,
-          answer: `SELECT name, size_earths FROM planets WHERE star = ${sq(s)} ORDER BY size_earths DESC`,
-          orderMatters: true,
-          hints: ['Filter by star, then sort.', 'ORDER BY size_earths DESC', `SELECT name, size_earths FROM planets WHERE star = '${s}' ORDER BY size_earths DESC`],
+          prompt: `The team has already visited ${v(s)}. Show the ${f('name')} and ${f('star')} of planets closer than ${v(d)} light-years that do <em>not</em> orbit ${s}.`,
+          answer: `SELECT name, star FROM planets WHERE distance_ly < ${d} AND NOT star = ${sq(s)}`,
+          hints: ['You can use NOT, or the "not equal" sign <>.', `distance_ly < ${d} AND NOT star = '${s}'`, `SELECT name, star FROM planets WHERE distance_ly < ${d} AND NOT star = '${s}'`],
         };
       },
     },

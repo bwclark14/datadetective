@@ -6,6 +6,7 @@ import { createEditor, MODES } from '../editor/editor.js';
 import { recordFinish, getPref, setPref } from '../progress.js';
 import { el, topbar, renderResult, params, fatal } from '../ui.js';
 import { checkReadOnly } from '../query-model.js';
+import { featuresFor, featureText } from '../levels.js';
 import { friendlyError } from '../marking.js';
 
 const main = document.querySelector('main');
@@ -70,6 +71,8 @@ async function start() {
     el('div', { class: 'case-head' },
       el('h1', {}, quest.title),
       el('span', { class: 'case-code', title: 'Case code — enter it on the home page to reopen this exact case' }, run.code)),
+    el('p', { class: 'level-line' }, el('span', { class: 'level-badge' }, `Level ${quest.level}`),
+      `You can use ${featureText(quest.level)}.`),
     steps, questionPanel, briefing, peek);
 
   // ---- right column ----
@@ -79,6 +82,8 @@ async function start() {
   const settings = modeSettings();
   const editor = createEditor(editorHost, {
     tables: [{ name: table.name, columns: table.columns }],
+    features: featuresFor(quest.level),
+    featureText: featureText(quest.level),
     modes: settings.modes,
     mode: settings.mode,
     onRun: () => runQuery(),

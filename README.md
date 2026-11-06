@@ -6,18 +6,18 @@ Everything runs in the browser using [sql.js](https://github.com/sql-js/sql.js) 
 
 ## What's in it
 
-**Eight quests**, each using a single table. Questions are filled in with random values every time, and the detective cases pick a new culprit, so pupils can't copy each other's answers.
+**Eight quests**, each using a single table, in six levels. Each level adds one new part of SQL, and in Blocks and Tiles pupils only see the pieces their level allows. Questions are filled in with random values every time, and the detective cases pick a new culprit, so pupils can't copy each other's answers.
 
-| Quest | Type | Questions | Covers |
-|---|---|---|---|
-| The Missing Trophy | Detective case | 6 | WHERE, AND, ORDER BY, COUNT |
-| River Watch | Environment & ethics | 6 | WHERE, ORDER BY, MAX, AVG, GROUP BY |
-| The Phantom Login | Cyber detective case | 6 | COUNT, GROUP BY, DISTINCT, ORDER BY |
-| Game Shop | Mission | 6 | ORDER BY, LIMIT, COUNT, AVG, MIN |
-| Planet Hunters | Mission | 7 | AND ranges, MAX, AVG, COUNT, ORDER BY |
-| Chart Toppers | Mission | 6 | ORDER BY, LIMIT, SUM, COUNT, GROUP BY, LIKE |
-| Wildlife Watch | Environment & ethics | 10 | Everything, including OR with brackets |
-| Sports Day | Mission | 10 | Everything, including MIN/MAX and LIKE |
+| Level | Quest | Type | Questions | New |
+|---|---|---|---|---|
+| 1 | The Missing Trophy | Detective case | 6 | SELECT, FROM, WHERE |
+| 1 | Planet Hunters | Mission | 7 | More WHERE: AND, OR, NOT, LIKE |
+| 2 | Chart Toppers | Mission | 6 | ORDER BY (including two sort fields) |
+| 3 | Game Shop | Mission | 6 | LIMIT |
+| 4 | The Phantom Login | Cyber detective case | 7 | DISTINCT |
+| 5 | Sports Day | Mission | 10 | COUNT, MIN, MAX, AVG, SUM |
+| 6 | River Watch | Environment & ethics | 6 | GROUP BY |
+| 6 | Wildlife Watch | Environment & ethics | 10 | Everything |
 
 The ethics quests finish with a discussion prompt.
 
@@ -65,7 +65,7 @@ Create a file in `js/quests/` (copy an existing one) and add it to `js/quests/in
 - `questions` — each has `build(rng, ctx)` returning `{ prompt, answer, hints: [3], orderMatters?, check? }`.
 - `intro(ctx)` and `outro(ctx)` — HTML for the briefing and ending.
 
-Then run the tests. They build every question with 200 different seeds and check that each has an answer, that sorted answers have no ties, and that every model answer can be built with Blocks.
+Give it a `level` (1–6, see `js/levels.js`) and use only that level's features. Then run the tests. They build every question with 200 different seeds and check that each has an answer, that sorted answers have no ties, that every model answer can be built with Blocks, and that no question or hint goes beyond its quest's level.
 
 ## Tests
 

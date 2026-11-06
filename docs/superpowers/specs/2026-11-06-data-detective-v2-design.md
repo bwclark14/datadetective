@@ -143,6 +143,9 @@ All data is fictional (no real people). Themed quests use a fixed base dataset; 
 
 Quests 1–6 have ~6 questions and quests 7–8 have 10, ordered from simple to combined. A play-through presents them in order; each question's parameters come from the seeded RNG. "New case" reseeds.
 
+### Progression (added after launch)
+Quests are ordered in six levels, each adding one SQL feature: 1 SELECT/FROM/WHERE (Missing Trophy, Planet Hunters); 2 ORDER BY (Chart Toppers); 3 LIMIT (Game Shop); 4 DISTINCT (Phantom Login); 5 COUNT/MIN/MAX/AVG/SUM (Sports Day, which gains a `points` column); 6 GROUP BY (River Watch, Wildlife Watch). `js/levels.js` defines the levels; each quest has a `level`. Blocks and Tiles only offer pieces the level allows; Type mode lists them. Tests enforce that no answer or hint exceeds its level and that each level's first quest uses its new feature.
+
 ### Randomness
 - Seeded PRNG (mulberry32). Seed shown on screen as a short code (e.g. `RIVER-4821`) so a teacher can ask a pupil to share or replay a specific case.
 - Generators only pick parameters that give a non-empty, non-trivial answer (validated by running `answerSQL` at generation time; regenerate up to N times).
