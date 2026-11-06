@@ -75,6 +75,7 @@ export function createEditor(host, opts) {
 
   const live = el('div', { class: 'visually-hidden', 'aria-live': 'polite' });
   const actions = el('div', { class: 'editor-actions' });
+  const footer = el('div', { class: 'editor-footer' });
   const body = el('div', { class: 'editor-body' });
   const root = el('section', { class: 'editor', 'aria-label': 'Query editor' });
   host.replaceChildren(root);
@@ -254,6 +255,7 @@ export function createEditor(host, opts) {
     const head = el('div', { class: 'editor-head' }, el('h2', {}, 'Build your query'), modeSwitch);
     const palette = state.mode === 'type' ? null : renderPalette({
       mode: state.mode, fields: fields(), tables: state.tables, values: state.values, dnd, features: opts.features,
+      tab: state.paletteTab, onTab: t => { state.paletteTab = t; },
       onAddValue: chip => {
         state.values = [chip, ...state.values.filter(v => chipText(v) !== chipText(chip))].slice(0, 12);
         render();
@@ -262,7 +264,7 @@ export function createEditor(host, opts) {
     });
     const main = state.mode === 'blocks' ? renderBlocks() : state.mode === 'tiles' ? renderTiles() : renderType();
     body.replaceChildren(main);
-    root.replaceChildren(...[head, notice, palette, body, actions, live].filter(Boolean));
+    root.replaceChildren(...[head, notice, body, palette, actions, footer, live].filter(Boolean));
     if (focusKey === 'textarea') root.querySelector('textarea')?.focus();
     else if (focusKey) root.querySelector(`[data-zone="${focusKey}"]`)?.focus();
     opts.onChange?.();
@@ -272,6 +274,7 @@ export function createEditor(host, opts) {
 
   return {
     actions,
+    footer,
     get mode() { return state.mode; },
     getSQL() {
       if (state.mode === 'blocks') {

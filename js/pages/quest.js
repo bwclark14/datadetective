@@ -7,6 +7,8 @@ import { recordFinish, getPref, setPref } from '../progress.js';
 import { el, topbar, renderResult, params, fatal } from '../ui.js';
 import { checkReadOnly } from '../query-model.js';
 import { featuresFor, featureText } from '../levels.js';
+import { buildSummary } from '../results.js';
+import { renderResultsSection } from '../results-card.js';
 import { friendlyError } from '../marking.js';
 
 const main = document.querySelector('main');
@@ -47,7 +49,9 @@ async function start() {
   }
 
   const table = run.tables[0];
-  const progress = run.questions.map(() => ({ hints: 0, stars: 0, solved: false }));
+  // Per question: hints shown, Check answer presses until solved, and the query that solved it.
+  const progress = run.questions.map(() => ({ hints: 0, stars: 0, solved: false, attempts: 0, answer: '' }));
+  const isNarrow = () => window.matchMedia('(max-width: 900px)').matches;
   let current = 0;
 
   // ---- left column ----
@@ -89,7 +93,8 @@ async function start() {
     onRun: () => runQuery(),
     onModeChange: m => { if (!settings.locked) setPref('mode', m); },
   });
-  const feedback = el('div', { class: 'feedback' });
+  const feedback = el('div', { class: 'feedback', 'aria-live': 'polite' });
+  editor.footer.append(feedback);
   editor.actions.append(
     el('button', { class: 'btn btn-primary', type: 'button', onclick: () => check() }, 'Check answer'),
     el('button', { class: 'btn', type: 'button', onclick: () => runQuery() }, 'Run query'),
@@ -97,7 +102,8 @@ async function start() {
   );
   resultBox.append(el('p', { class: 'muted' }, 'Run your query to see what it finds.'));
 
-  main.replaceChildren(el('div', { class: 'workspace' }, side, el('div', { style: 'display:grid;gap:16px' }, editorHost, resultPanel)));
+  editorHost.classList.add('editor-panel');
+  main.replaceChildren(el('div', { class: 'workspace quest-workspace' }, side, el('div', { class: 'work-col' }, editorHost, resultPanel)));
 
   function renderSteps() {
     steps.replaceChildren(...run.questions.map((q, i) => el('li', {
@@ -122,7 +128,6 @@ async function start() {
       el('h2', {}, `Question ${current + 1} of ${run.questions.length}`),
       el('p', { class: 'prompt', html: q.prompt }),
       pr.solved ? el('p', {}, starsText(pr.stars), ` Solved${pr.hints ? ` with ${pr.hints} hint${pr.hints === 1 ? '' : 's'}` : ' without hints'}.`) : null,
-      feedback,
       el('div', { class: 'hints' }, hintBtn, pr.hints ? hintList : null),
       nextBtn ? el('p', { style: 'margin-top:12px' }, nextBtn) : null,
     ].filter(Boolean));
@@ -136,6 +141,7 @@ async function start() {
     if (!safe.ok) { renderResult(resultBox, { error: safe.reason }); return null; }
     const res = db.run(sql);
     renderResult(resultBox, res.error ? { error: friendlyError(res.error) } : res);
+    if (isNarrow()) resultPanel.scrollIntoView({ block: 'start', behavior: 'smooth' });
     return sql;
   }
 
@@ -145,10 +151,14 @@ async function start() {
     const { sql, error } = editor.getSQL();
     if (error) { feedback.replaceChildren(el('div', { class: 'notice warn' }, error)); return; }
     const verdict = markAnswer(q, sql, db);
+    if (!pr.solved) pr.attempts++;
     renderResult(resultBox, verdict.result && !verdict.result.error ? verdict.result : { error: verdict.message });
     if (verdict.correct) {
-      if (!pr.solved) { pr.solved = true; pr.stars = starsFor(pr.hints); }
-      feedback.replaceChildren(el('div', { class: 'notice good', role: 'status' }, 'Correct! Your query finds exactly the right records.'));
+      if (!pr.solved) { pr.solved = true; pr.stars = starsFor(pr.hints); pr.answer = sql; }
+      const last = current === run.questions.length - 1;
+      feedback.replaceChildren(el('div', { class: 'notice good feedback-correct', role: 'status' },
+        el('span', {}, 'Correct! Your query finds exactly the right records.'),
+        el('button', { class: 'btn btn-primary btn-small', type: 'button', onclick: next }, last ? 'Close the case' : 'Next question')));
     } else {
       feedback.replaceChildren(el('div', { class: verdict.kind === 'error' ? 'notice bad' : 'notice warn', role: 'status' }, verdict.message));
     }
@@ -161,27 +171,31 @@ async function start() {
       current++;
       briefing.open = false;
       renderQuestion();
-      questionPanel.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      editor.clear();
+      renderResult(resultBox, null);
+      resultBox.append(el('p', { class: 'muted' }, 'Run your query to see what it finds.'));
+      questionPanel.scrollIntoView({ block: isNarrow() ? 'start' : 'nearest', behavior: 'smooth' });
       return;
     }
     finish();
   }
 
   function finish() {
-    const total = progress.reduce((s, p) => s + p.stars, 0);
+    const total = progress.reduce((sum, p) => sum + p.stars, 0);
     const max = run.questions.length * 3;
     recordFinish(quest.id, total, max);
-    const newSeed = randomSeed();
-    questionPanel.replaceChildren(
-      el('h2', {}, 'Case closed'),
-      el('p', { class: 'finish' }, el('span', { class: 'stars' }, `★ ${total}`), ` out of ${max} stars`),
-      el('div', { html: quest.outro(run.ctx) }),
-      el('p', { style: 'display:flex;gap:8px;flex-wrap:wrap;margin-top:12px' },
-        el('a', { class: 'btn btn-primary', href: `quest.html?q=${quest.id}&seed=${newSeed}${params().get('mode') ? `&mode=${params().get('mode')}` : ''}` }, 'Play a new case'),
-        el('a', { class: 'btn', href: 'index.html' }, 'Choose another quest')),
-    );
-    current = run.questions.length;
-    renderSteps();
+    const mode = params().get('mode');
+    const again = `quest.html?q=${quest.id}&seed=${randomSeed()}${mode ? `&mode=${mode}` : ''}`;
+    main.replaceChildren(el('div', { class: 'finish-view' },
+      el('section', { class: 'panel finish-intro' },
+        el('h1', {}, 'Case closed'),
+        el('p', { class: 'finish' }, el('span', { class: 'stars' }, `★ ${total}`), ` out of ${max} stars`),
+        el('div', { html: quest.outro(run.ctx) })),
+      renderResultsSection(name => buildSummary(quest, run, progress, { name })),
+      el('p', { class: 'finish-next' },
+        el('a', { class: 'btn btn-primary', href: again }, 'Play a new case'),
+        el('a', { class: 'btn', href: 'index.html' }, 'Choose another quest'))));
+    window.scrollTo({ top: 0 });
   }
 
   renderQuestion();

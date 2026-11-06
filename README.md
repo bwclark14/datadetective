@@ -52,6 +52,8 @@ No account or key is needed, and only a request for public data is sent. If a sc
 - **Case codes** such as `RIVER-4821` appear on each quest. Entering one on the home page reopens exactly that case.
 - **Marking** compares the pupil's results with a model answer, so any correct query passes (`price < 20` and `20 > price` both work). Wrong answers get a specific nudge, such as "you have 12 rows; the answer has 4".
 - **Hints**: three per question. Stars: 3 with no hints, 2 with one, 1 with more. Stars are saved in the browser only.
+- **Results card**: at the end of each quest pupils get a card showing every question, the query they answered it with, how many attempts it took and how many hints they used, plus totals. They can add their name, then Share it (phones and tablets), Save picture (a PNG) or Copy as text to paste into Teams or an email. Attempts count each press of Check answer until the question is solved.
+- **Phones and tablets**: every page fits small screens. On a phone the drop zones come first and the pieces sit underneath in tabs (Fields, Compare, Logic and so on), with bigger touch targets.
 
 ## Running it
 

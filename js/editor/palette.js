@@ -14,7 +14,7 @@ export function parseValueInput(raw) {
 }
 
 // `features` limits which pieces are offered (see js/levels.js); undefined means everything.
-export function renderPalette({ mode, fields, tables, values, dnd, onAddValue, features }) {
+export function renderPalette({ mode, fields, tables, values, dnd, onAddValue, features, tab, onTab }) {
   const chips = paletteChips(fields, tables);
   const has = f => !features || features.has(f);
   const functions = chips.functions.filter(c => (c.t === 'distinct' ? has('distinct') : has('functions')));
@@ -34,20 +34,36 @@ export function renderPalette({ mode, fields, tables, values, dnd, onAddValue, f
     onAddValue(chip);
   };
 
-  return el('div', { class: 'palette', 'aria-label': 'Query pieces' },
-    mode === 'tiles' ? group('Keywords', keywords) : null,
-    group('Table', chips.tables),
-    group('Fields', chips.fields),
-    functions.length ? group(has('functions') ? 'Functions' : 'Extras', functions) : null,
-    group('Compare', chips.compare),
-    group('Logic', chips.logic),
-    has('orderBy') ? group('Sort', chips.sort) : null,
-    el('div', { class: 'palette-group' },
+  // Groups of pieces. On small screens only one group shows at a time, picked with tabs.
+  const groups = [
+    mode === 'tiles' ? ['Keywords', group('Keywords', keywords)] : null,
+    ['Fields', el('div', { class: 'palette-stack' }, group('Table', chips.tables), group('Fields', chips.fields))],
+    functions.length ? [has('functions') ? 'Functions' : 'Extras', group(has('functions') ? 'Functions' : 'Extras', functions)] : null,
+    ['Compare', group('Compare', chips.compare)],
+    ['Logic', group('Logic', chips.logic)],
+    has('orderBy') ? ['Sort', group('Sort', chips.sort)] : null,
+    ['Values', el('div', { class: 'palette-group', role: 'group', 'aria-label': 'Values' },
       el('span', { class: 'label' }, 'Values'),
       el('div', { class: 'value-maker' },
         input,
         el('button', { class: 'btn btn-small', type: 'button', onclick: add }, 'Make value'),
-        values.map(chip => chipElement(chip, { dnd, payload: { chip } })))),
+        values.map(chip => chipElement(chip, { dnd, payload: { chip } }))))],
+  ].filter(Boolean);
+  const active = groups.some(([name]) => name === tab) ? tab : groups[0][0];
+  const panels = groups.map(([name, node]) => el('div', { class: 'palette-panel', 'data-tab': name, 'data-active': String(name === active) }, node));
+  const tabs = el('div', { class: 'palette-tabs', role: 'tablist', 'aria-label': 'Kinds of piece' }, groups.map(([name]) => el('button', {
+    type: 'button', role: 'tab', 'aria-selected': String(name === active),
+    onclick: e => {
+      onTab?.(name);
+      const pal = e.currentTarget.closest('.palette');
+      pal.querySelectorAll('.palette-tabs [role=tab]').forEach(b => b.setAttribute('aria-selected', String(b === e.currentTarget)));
+      pal.querySelectorAll('.palette-panel').forEach(pn => pn.setAttribute('data-active', String(pn.dataset.tab === name)));
+    },
+  }, name)));
+
+  return el('div', { class: 'palette', 'aria-label': 'Query pieces' },
+    tabs,
+    panels,
     el('p', { class: 'palette-tip' }, 'Drag a piece into place, or tap it and then tap where it should go. Numbers are made as numbers; anything else becomes text. Put quotes round a number to make it text.'),
   );
 }

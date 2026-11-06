@@ -245,7 +245,24 @@ await check('a full quest can be finished', async () => {
     await p.waitFor('!!document.querySelector(".feedback .notice.good")');
     await p.click('.question .btn-primary');
   }
-  await p.waitFor('document.querySelector(".question h2").textContent === "Case closed"');
+  await p.waitFor('!!document.querySelector(".results-card")');
+  assert.equal(await p.eval('document.querySelector(".finish-intro h1").textContent'), 'Case closed');
+  assert.equal(await p.eval('document.querySelectorAll(".rc-questions li").length'), answers.length);
+  assert.match(await p.eval('document.querySelector(".rc-stats").textContent'), /Attempts\s*6/);
+  assert.match(await p.eval('document.querySelector(".rc-stats").textContent'), /Hints used\s*0/);
+  await p.click('#rc-name');
+  await p.type('Ava M');
+  await p.waitFor('document.querySelector(".rc-meta strong")?.textContent === "Ava M"');
+  // The picture draws, with a sensible size.
+  const img = await p.eval(`(async () => {
+    const { drawCardImage } = await import('/js/results-card.js');
+    const { buildSummary } = await import('/js/results.js');
+    const c = await drawCardImage({ questTitle: 'Game Shop', level: 3, code: 'GAMES-9', name: 'Ava M', date: '6 November 2026', stars: 18, maxStars: 18, attempts: 6, hints: 0,
+      questions: [{ number: 1, prompt: 'A question that is long enough to wrap onto a second line of the card when it is drawn as a picture', answer: "SELECT title, price FROM games WHERE platform = 'Switch' AND price < 20 ORDER BY price, title", attempts: 2, hints: 1, stars: 2 }] });
+    return { w: c.width, h: c.height, size: c.toDataURL('image/png').length };
+  })()`);
+  assert.equal(img.w, 1080);
+  assert.ok(img.h > 600 && img.size > 20000, JSON.stringify(img));
   await p.screenshot(`${out}/quest-finished.png`);
   await p.goto(`${BASE}/index.html`);
   await p.waitFor('document.querySelectorAll(".quest").length === 8');
@@ -259,13 +276,26 @@ await check('phone: layout fits and touch drag works', async () => {
   const m = phone.page;
   await m.goto(`${BASE}/index.html`);
   await m.waitFor('document.querySelectorAll(".quest").length === 8');
-  assert.ok(await m.eval('document.documentElement.scrollWidth <= window.innerWidth + 1'), 'no sideways scroll on home');
+  assert.ok(await m.eval('window.innerWidth === 390 && document.documentElement.scrollWidth <= 390'), 'no sideways scroll on home');
   await m.screenshot(`${out}/home-phone.png`);
   await m.goto(`${BASE}/quest.html?q=river-watch&seed=4821&mode=blocks`);
   await m.waitFor('!!document.querySelector(".question .prompt")');
   await m.touchDrag(chip('* all fields'), zone('select'));
   await m.waitFor(`document.querySelectorAll('${zone('select')} .chip').length === 1`);
-  assert.ok(await m.eval('document.documentElement.scrollWidth <= window.innerWidth + 1'), 'no sideways scroll on quest');
+  assert.ok(await m.eval('window.innerWidth === 390 && document.documentElement.scrollWidth <= 390'), 'no sideways scroll on quest');
+  // On a phone, the drop zones come before the pieces, and pieces are grouped in tabs.
+  const order = await m.eval(`(() => {
+    const z = document.querySelector('[data-zone=select]').getBoundingClientRect().top;
+    const pal = document.querySelector('.palette').getBoundingClientRect().top;
+    const q = document.querySelector('.question').getBoundingClientRect().top;
+    const ed = document.querySelector('.editor-panel').getBoundingClientRect().top;
+    return { zonesFirst: z < pal, questionBeforeEditor: q < ed, tabs: getComputedStyle(document.querySelector('.palette-tabs')).display };
+  })()`);
+  assert.deepEqual(order, { zonesFirst: true, questionBeforeEditor: true, tabs: 'flex' });
+  await m.click('.palette-tabs [role=tab]:nth-child(3)');
+  await m.waitFor(`document.querySelector('.palette-panel[data-tab=Compare]').dataset.active === 'true'`);
+  await m.touchDrag('.palette .chip[aria-label="= comparison"]', '[data-zone=where]');
+  await m.waitFor(`document.querySelectorAll('[data-zone=where] .chip').length === 1`);
   await m.screenshot(`${out}/quest-phone.png`);
   results.push(...m.consoleLog.map(l => `CONSOLE(phone) ${l}`));
 });

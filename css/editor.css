@@ -121,3 +121,50 @@
   .add-clauses { padding-left: 0; }
   .palette-group > .label { flex-basis: 100%; }
 }
+
+/* ---------- Palette tabs (small screens only) ---------- */
+.palette-tabs { display: none; }
+.palette-panel, .palette-stack { display: contents; }
+@media (min-width: 641px) {
+  /* On larger screens the pieces sit above the drop zones. */
+  .editor > .editor-head { order: -3; }
+  .editor > .switch-notice { order: -2; }
+  .editor > .palette { order: -1; }
+}
+@media (max-width: 640px) {
+  .palette { padding: 10px; gap: 8px; }
+  .palette-tabs {
+    display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .palette-tabs::-webkit-scrollbar { display: none; }
+  .palette-tabs button {
+    flex: none; min-height: 40px; padding: 6px 14px; border-radius: 999px; border: 1px solid var(--line);
+    background: var(--surface); color: var(--ink-soft); font: 700 .9rem var(--font-body); cursor: pointer;
+  }
+  .palette-tabs button[aria-selected="true"] { background: var(--ink); border-color: var(--ink); color: var(--surface); }
+  .palette-panel { display: block; min-height: 52px; }
+  .palette-panel[data-active="false"] { display: none; }
+  .palette-stack { display: grid; gap: 8px; }
+  .palette-group > .label { display: none; }
+  .palette-tip { font-size: .8rem; }
+  .editor-head h2 { font-size: 1.2rem; }
+  .mode-switch button { padding: 4px 12px; }
+  .sql-preview { font-size: .85rem; }
+  .code-box textarea, .code-box .code-layer { font-size: .92rem; }
+}
+
+/* ---------- Touch screens: bigger targets ---------- */
+@media (pointer: coarse) {
+  .chip { min-height: 44px; padding: 6px 12px; }
+  .chip .chip-x { width: 28px; height: 28px; }
+  .mode-switch button { min-height: 44px; }
+  .add-clauses button { min-height: 40px; }
+  .clause-name button { min-width: 32px; min-height: 32px; }
+  .zone { min-height: 60px; }
+}
+
+/* ---------- Under the buttons ---------- */
+.editor-footer:empty { display: none; }
+.feedback .notice { margin: 0; }
+.feedback-correct { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
