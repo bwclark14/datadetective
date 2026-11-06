@@ -7,6 +7,7 @@ import { el, highlightSQL } from '../ui.js';
 import { createDnd } from './dnd.js';
 import { chipElement, describeChip } from './chips.js';
 import { renderPalette } from './palette.js';
+import { isNumericType } from '../types.js';
 
 export const MODES = [
   { id: 'blocks', label: 'Blocks' },
@@ -99,7 +100,7 @@ export function createEditor(host, opts) {
   function withDefaults(chip) {
     const c = { ...chip };
     if (c.t === 'agg' && !c.arg) {
-      const num = fields().find(f => f.type === 'number');
+      const num = fields().find(f => isNumericType(f.type));
       c.arg = (num || fields()[0] || { name: '*' }).name;
     }
     return c;

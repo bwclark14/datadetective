@@ -29,7 +29,7 @@ The ethics quests finish with a discussion prompt.
 
 Pieces can be dragged with a mouse or finger, tapped then placed, or moved with the keyboard (Enter to pick up, Enter on a row to place, Delete to remove).
 
-**My data** — pupils load their own CSV file, check whether each column is a number or text, and query it with the same editor. Three fictional sample files are included.
+**My data** — pupils load their own CSV file, choose a data type for each column (Text, Integer, Real, Date, Time or Boolean — a guess is preselected, and values that don't fit are flagged), then query it with the same editor. UK dates such as 03/11/2026 are stored as 2026-11-03 so they sort correctly, and Boolean columns can be queried with `= TRUE`. Three fictional sample files are included.
 
 **Live data** — also in My data, pupils can fetch real public data straight into a table:
 

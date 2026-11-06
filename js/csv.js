@@ -1,6 +1,7 @@
 // Reading a pupil's CSV file into a table definition. Everything happens in the browser.
 
 import { isSqlKeyword } from './query-model.js';
+import { guessType, convertValue, countMisfits, isNumericType } from './types.js';
 
 export const LIMITS = { bytes: 5 * 1024 * 1024, rows: 20000, columns: 50 };
 
@@ -52,13 +53,7 @@ export function isNumberText(v) {
   return /^-?(\d+\.?\d*|\.\d+)([eE][+-]?\d+)?$/.test(t);
 }
 
-export function guessType(values) {
-  const filled = values.map(v => String(v ?? '').trim()).filter(v => v !== '');
-  if (!filled.length) return 'text';
-  if (filled.some(v => /^-?0\d/.test(v))) return 'text';
-  const numeric = filled.filter(isNumberText).length;
-  return numeric / filled.length >= 0.95 ? 'number' : 'text';
-}
+export { guessType };
 
 export function sanitizeName(raw, fallback = 'column') {
   let n = String(raw ?? '').trim().toLowerCase()
@@ -116,16 +111,17 @@ export function prepareCSV(text, { bytes } = {}) {
   return { ok: true, original: headers, names, types, rows: fixed, report: { padded, trimmed } };
 }
 
+/** Number of values in column j that don't fit the chosen type. */
+export function columnMisfits(prepared, j, type) {
+  return countMisfits(prepared.rows.map(r => r[j]), type);
+}
+
 export function buildTable(name, prepared, types = prepared.types) {
   let blanked = 0;
   const rows = prepared.rows.map(r => r.map((v, j) => {
-    const t = String(v).trim();
-    if (types[j] === 'number') {
-      if (t === '') return null;
-      if (!isNumberText(t) && !/^-?0\d*\.?\d*$/.test(t)) { blanked++; return null; }
-      return Number(t);
-    }
-    return t === '' ? null : String(v);
+    const { ok, value } = convertValue(v, types[j]);
+    if (!ok) blanked++;
+    return value;
   }));
   return {
     def: { name, columns: prepared.names.map((n, j) => ({ name: n, type: types[j] })), rows },
@@ -144,8 +140,10 @@ export function toCSV(columns, rows) {
 
 /** Suggested (unmarked) questions based on column types and values. */
 export function starterChallenges(def, pick = list => list[0]) {
-  const nums = def.columns.filter(c => c.type === 'number');
+  const nums = def.columns.filter(c => isNumericType(c.type));
   const texts = def.columns.filter(c => c.type === 'text');
+  const dates = def.columns.filter(c => c.type === 'date');
+  const bools = def.columns.filter(c => c.type === 'boolean');
   const out = [`How many records are in <b>${def.name}</b>?`];
   if (nums.length) {
     const n = pick(nums).name;
@@ -169,6 +167,13 @@ export function starterChallenges(def, pick = list => list[0]) {
     }
     out.push(`Which <b>${t.name}</b> values start with the letter A? (Try LIKE 'A%')`);
   }
+  if (dates.length) {
+    const d = pick(dates);
+    const j = def.columns.indexOf(d);
+    const sorted = def.rows.map(r => r[j]).filter(Boolean).sort();
+    if (sorted.length) out.push(`Show the records with a <b>${d.name}</b> after '${sorted[Math.floor(sorted.length / 2)]}', earliest first. (Dates are written YYYY-MM-DD.)`);
+  }
+  if (bools.length) out.push(`How many records have <b>${pick(bools).name}</b> = TRUE?`);
   return out;
 }
 

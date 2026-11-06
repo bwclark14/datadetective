@@ -1,6 +1,7 @@
 // Builds the label-tape element for a chip.
 import { chipText, AGGREGATES } from '../query-model.js';
 import { el } from '../ui.js';
+import { isNumericType } from '../types.js';
 
 const KIND_NAMES = {
   field: 'field', star: 'all fields', agg: 'function', distinct: 'DISTINCT', table: 'table', op: 'comparison',
@@ -27,7 +28,7 @@ export function chipElement(chip, opts = {}) {
   if (chip.t === 'agg' && opts.placed) {
     const select = el('select', { 'aria-label': `What ${chip.fn} works on` });
     const choices = chip.fn === 'COUNT' ? ['*', ...opts.fields.map(f => f.name)]
-      : opts.fields.filter(f => f.type === 'number').map(f => f.name).concat(opts.fields.filter(f => f.type !== 'number').map(f => f.name));
+      : opts.fields.filter(f => isNumericType(f.type)).map(f => f.name).concat(opts.fields.filter(f => !isNumericType(f.type)).map(f => f.name));
     if (!choices.includes(chip.arg)) choices.unshift(chip.arg);
     for (const c of choices) select.append(el('option', { value: c, selected: c === chip.arg ? true : null }, c));
     select.addEventListener('change', () => opts.onArgChange(select.value));

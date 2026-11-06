@@ -128,7 +128,8 @@ test('CSV parsing handles quotes, delimiters and BOM', () => {
 });
 
 test('CSV types and names', () => {
-  assert.equal(guessType(['1', '2.5', '', '-3']), 'number');
+  assert.equal(guessType(['1', '2.5', '', '-3']), 'real');
+  assert.equal(guessType(['1', '25', '', '-3']), 'integer');
   assert.equal(guessType(['07700 900123', '07700 900456']), 'text');
   assert.equal(guessType(['0123', '0456']), 'text');
   assert.equal(guessType(['1', 'two', '3']), 'text');

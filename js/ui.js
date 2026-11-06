@@ -54,7 +54,7 @@ export function formatNumber(n) {
 }
 
 export function highlightSQL(sql) {
-  const kw = /\b(SELECT|FROM|WHERE|GROUP|ORDER|BY|LIMIT|AND|OR|NOT|LIKE|ASC|DESC|DISTINCT|AS|JOIN|ON|HAVING|IN|IS|NULL|BETWEEN)\b/gi;
+  const kw = /\b(SELECT|FROM|WHERE|GROUP|ORDER|BY|LIMIT|AND|OR|NOT|LIKE|ASC|DESC|DISTINCT|AS|JOIN|ON|HAVING|IN|IS|NULL|BETWEEN|TRUE|FALSE)\b/gi;
   const fn = /\b(COUNT|MIN|MAX|AVG|SUM)\b/gi;
   let out = '';
   const re = /('(?:[^']|'')*'?)|(-?\b\d+(?:\.\d+)?\b)|([A-Za-z_][A-Za-z0-9_]*)|([\s\S])/g;
