@@ -4,6 +4,7 @@ import { getProgress } from '../progress.js';
 import { el, topbar } from '../ui.js';
 import { chipElement } from '../editor/chips.js';
 import { tilesFromSQL, markTables } from '../query-model.js';
+import { LEVELS } from '../levels.js';
 
 function starsLine(best, max) {
   if (!max) return el('span', { class: 'muted' }, 'Not played yet');
@@ -11,16 +12,26 @@ function starsLine(best, max) {
     `★ ${best}`, el('span', { class: 'muted' }, ` / ${max}`));
 }
 
-function questCard(q) {
+function levelLine(q, index) {
+  const lvl = LEVELS.find(l => l.level === q.level);
+  const firstAtLevel = QUESTS.findIndex(x => x.level === q.level) === index;
+  const what = q.level === 1
+    ? (firstAtLevel ? 'SELECT, FROM and WHERE' : 'More WHERE practice: AND, OR, NOT, LIKE')
+    : firstAtLevel ? `New: ${lvl.newLabel}` : 'Everything so far';
+  return el('div', { class: 'level-line' }, el('span', { class: 'level-badge' }, `Level ${q.level}`), what);
+}
+
+function questCard(q, index) {
   const p = getProgress(q.id);
   const max = q.questions.length * 3;
   return el('li', { class: 'quest', 'data-colour': q.colour },
+    levelLine(q, index),
     el('span', { class: 'kind' }, q.kind),
     el('h3', {}, q.title),
     el('p', {}, q.blurb),
     el('div', { class: 'quest-foot' },
       el('div', {},
-        el('div', { class: 'skills' }, `${q.questions.length} questions: ${q.skills.join(', ')}`),
+        el('div', { class: 'skills' }, `${q.questions.length} questions`),
         starsLine(p.best, p.completed ? max : 0)),
       el('a', { class: 'btn btn-primary', href: `quest.html?q=${q.id}` }, p.completed ? 'Play a new case' : 'Start')));
 }
@@ -55,10 +66,10 @@ function render() {
       el('h1', {}, 'Solve cases by asking the data the right questions.'),
       el('p', { class: 'lede' }, 'Build real SQL queries by dragging pieces into place, then switch to typing when you\'re ready. Every case is different, so no two people get the same answers.'),
       el('div', { class: 'hero-actions' },
-        el('a', { class: 'btn btn-primary', href: `quest.html?q=${QUESTS[0].id}` }, `Start with ${QUESTS[0].title}`),
+        el('a', { class: 'btn btn-primary', href: `quest.html?q=${QUESTS[0].id}` }, `Start at level 1: ${QUESTS[0].title}`),
         replay)),
-    el('div', { class: 'section-head' }, el('h2', {}, 'Quests'), el('p', {}, 'Each one uses a single table.')),
-    el('ul', { class: 'quest-list' }, QUESTS.map(questCard)),
+    el('div', { class: 'section-head' }, el('h2', {}, 'Quests'), el('p', {}, 'Work through them in order: each level adds one new part of SQL.')),
+    el('ol', { class: 'quest-list' }, QUESTS.map((q, i) => questCard(q, i))),
     el('section', { class: 'panel mydata-callout' },
       el('div', {},
         el('h2', {}, 'Query your own data'),
@@ -68,6 +79,7 @@ function render() {
       el('h2', {}, 'For teachers'),
       el('dl', {},
         el('dt', {}, 'Level'), el('dd', {}, 'Fourth Level Computing Science: SELECT, FROM, WHERE, AND/OR/NOT, comparisons, LIKE, ORDER BY, LIMIT, DISTINCT, COUNT/MIN/MAX/AVG/SUM and GROUP BY.'),
+        el('dt', {}, 'Progression'), el('dd', {}, 'Quests build up in six levels: 1 SELECT, FROM, WHERE (two quests); 2 adds ORDER BY; 3 adds LIMIT; 4 adds DISTINCT; 5 adds COUNT, MIN, MAX, AVG and SUM; 6 adds GROUP BY (two quests). In Blocks and Tiles, pupils only see the pieces their level allows.'),
         el('dt', {}, 'Editing modes'), el('dd', {}, 'Pupils can switch between Blocks, Tiles and Type. To fix the mode for a lesson, add ?mode=blocks (or tiles, type) to the page address — e.g. quest.html?q=river-watch&mode=blocks. Use ?mode=blocks,tiles to allow two.'),
         el('dt', {}, 'Case codes'), el('dd', {}, 'Each quest shows a code like RIVER-4821. Entering it here reopens exactly that case, so a pupil can show you their version.'),
         el('dt', {}, 'Marking'), el('dd', {}, 'Answers are marked by comparing results with a model answer, so any correct query passes. Hints reduce the stars available.'),

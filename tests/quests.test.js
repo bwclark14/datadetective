@@ -4,6 +4,7 @@ import { QUESTS } from '../js/quests/index.js';
 import { startQuest, markAnswer, parseCaseCode, caseCode } from '../js/quest-engine.js';
 import { parseSQL, toSQL } from '../js/query-model.js';
 import { makeRunner } from './helpers.js';
+import { featuresFor, featuresUsed, LEVELS } from '../js/levels.js';
 
 const SEEDS = Array.from({ length: 200 }, (_, i) => 1000 + i * 37);
 
@@ -64,6 +65,35 @@ test('detective quests always have exactly one culprit', () => {
       culprits.add(run.ctx.culprit);
     }
     assert.ok(culprits.size > 20, `${id}: culprit changes between seeds`);
+  }
+});
+
+test('quests are progressive: each uses only its level, and introduces its new feature', () => {
+  const levels = QUESTS.map(q => q.level);
+  assert.deepEqual(levels, [1, 1, 2, 3, 4, 5, 6, 6], 'quests in level order');
+  for (const quest of QUESTS) {
+    const allowed = featuresFor(quest.level);
+    const usedAcrossQuest = new Set();
+    for (const seed of SEEDS.slice(0, 40)) {
+      const run = startQuest(quest, seed, makeRunner());
+      for (const q of run.questions) {
+        const parsed = parseSQL(q.answer);
+        for (const f of featuresUsed(parsed.query)) {
+          assert.ok(allowed.has(f), `${quest.id} (level ${quest.level}) question ${q.id} uses ${f}`);
+          usedAcrossQuest.add(f);
+        }
+        for (const h of q.hints) {
+          const hintBad = { orderBy: /ORDER BY/, limit: /LIMIT/, distinct: /DISTINCT/, functions: /\b(COUNT|MIN|MAX|AVG|SUM)\(/, groupBy: /GROUP BY/ };
+          for (const [f, re] of Object.entries(hintBad)) {
+            if (!allowed.has(f)) assert.ok(!re.test(h), `${quest.id} ${q.id} hint mentions ${f}`);
+          }
+        }
+      }
+    }
+    const adds = LEVELS.find(l => l.level === quest.level).adds;
+    if (adds && QUESTS.find(q => q.level === quest.level) === quest) {
+      assert.ok(usedAcrossQuest.has(adds), `${quest.id} should introduce ${adds}`);
+    }
   }
 });
 

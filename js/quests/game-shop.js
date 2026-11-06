@@ -32,7 +32,7 @@ export default {
   kind: 'Mission',
   colour: 'rose',
   blurb: 'You\'ve got a Saturday job at a games shop. Customers have questions — answer them from the stock database.',
-  skills: ['WHERE', 'ORDER BY', 'LIMIT', 'COUNT', 'AVG', 'MIN'],
+  level: 3,
 
   generate() {
     return {
@@ -69,9 +69,11 @@ export default {
       build: rng => {
         const p = rng.pick(PLATFORMS), n = rng.pick([15, 20, 25, 30]);
         return {
-          prompt: `"I've got £${n} to spend on a ${p} game." Show the ${f('title')} and ${f('price')} of ${v(p)} games that cost <em>less than</em> ${v(`£${n}`)}.`,
-          answer: `SELECT title, price FROM games WHERE platform = ${sq(p)} AND price < ${n}`,
-          hints: ['Two conditions joined with AND.', `Prices are numbers — no £ sign and no quotes: price < ${n}.`, `SELECT title, price FROM games WHERE platform = '${p}' AND price < ${n}`],
+          prompt: `"I've got £${n} to spend on a ${p} game." Show the ${f('title')} and ${f('price')} of ${v(p)} games under ${v(`£${n}`)}, cheapest first.
+            Games with the same price should be in alphabetical order.`,
+          answer: `SELECT title, price FROM games WHERE platform = ${sq(p)} AND price < ${n} ORDER BY price, title`,
+          orderMatters: true,
+          hints: ['Two conditions joined with AND, then sort by two fields.', `Prices are numbers — no £ sign and no quotes. ORDER BY price, title.`, `SELECT title, price FROM games WHERE platform = '${p}' AND price < ${n} ORDER BY price, title`],
         };
       },
     },
@@ -83,38 +85,46 @@ export default {
           prompt: `"What are your best games?" Show the ${f('title')} and ${f('rating')} of the top ${v(k)} rated games, best first.`,
           answer: `SELECT title, rating FROM games ORDER BY rating DESC LIMIT ${k}`,
           orderMatters: true,
-          hints: ['Sort, then cut the list short.', `ORDER BY rating DESC puts the best first. LIMIT ${k} keeps ${k} rows.`, `SELECT title, rating FROM games ORDER BY rating DESC LIMIT ${k}`],
+          hints: ['Sort the best to the top, then cut the list short with LIMIT.', `ORDER BY rating DESC puts the best first. LIMIT ${k} keeps only ${k} rows.`, `SELECT title, rating FROM games ORDER BY rating DESC LIMIT ${k}`],
         };
       },
     },
     {
-      id: 'per-platform',
-      build: () => ({
-        prompt: `The manager wants a stock check. Show each ${f('platform')} and <em>how many</em> games there are for it.`,
-        answer: 'SELECT platform, COUNT(*) FROM games GROUP BY platform',
-        hints: ['Counting per group needs COUNT(*) and GROUP BY.', 'SELECT platform, COUNT(*) …', 'SELECT platform, COUNT(*) FROM games GROUP BY platform'],
-      }),
-    },
-    {
-      id: 'avg-age',
-      build: rng => {
-        const r = rng.pick([3, 7, 12, 16]);
-        return {
-          prompt: `"How much do PEGI ${r} games usually cost?" Show the <em>average</em> price of games with an ${f('age_rating')} of ${v(r)}.`,
-          answer: `SELECT AVG(price) FROM games WHERE age_rating = ${r}`,
-          hints: ['Use AVG( ) with a WHERE.', `AVG(price), and age_rating = ${r}.`, `SELECT AVG(price) FROM games WHERE age_rating = ${r}`],
-        };
-      },
-    },
-    {
-      id: 'cheapest',
+      id: 'cheapest-genre',
       build: rng => {
         const g = rng.pick(Object.keys(GENRES));
         return {
-          prompt: `"What's the cheapest ${g} game you sell?" Show just the <em>lowest</em> ${f('price')} of a ${v(g)} game.`,
-          answer: `SELECT MIN(price) FROM games WHERE genre = ${sq(g)}`,
-          check: res => res.rows[0][0] !== null,
-          hints: ['There\'s an aggregate for the smallest value.', `MIN(price) with genre = '${g}'.`, `SELECT MIN(price) FROM games WHERE genre = '${g}'`],
+          prompt: `"Show me your 3 cheapest ${g} games." Show the ${f('title')} and ${f('price')} of the 3 cheapest ${v(g)} games.
+            If prices are the same, use alphabetical order.`,
+          answer: `SELECT title, price FROM games WHERE genre = ${sq(g)} ORDER BY price, title LIMIT 3`,
+          orderMatters: true,
+          check: res => res.rows.length === 3,
+          hints: ['WHERE, then ORDER BY, then LIMIT — in that order.', 'Cheapest first is ascending. Sort by price, then title.', `SELECT title, price FROM games WHERE genre = '${g}' ORDER BY price, title LIMIT 3`],
+        };
+      },
+    },
+    {
+      id: 'best-for-age',
+      build: rng => {
+        const r = rng.pick([7, 12, 16]);
+        return {
+          prompt: `"I'm buying for someone who can play PEGI ${r} games or younger. What's the single best one?" Show just the ${f('title')} of the highest-rated game with an ${f('age_rating')} of ${v(r)} or less.`,
+          answer: `SELECT title FROM games WHERE age_rating <= ${r} ORDER BY rating DESC LIMIT 1`,
+          orderMatters: true,
+          hints: ['"or less" means <=. Then sort and keep one row.', 'ORDER BY rating DESC LIMIT 1 gives the single best.', `SELECT title FROM games WHERE age_rating <= ${r} ORDER BY rating DESC LIMIT 1`],
+        };
+      },
+    },
+    {
+      id: 'value',
+      build: rng => {
+        const n = rng.pick([15, 20, 25]), k = rng.pick([3, 4, 5]);
+        return {
+          prompt: `The manager wants a "Great value" shelf. Show the ${f('title')}, ${f('platform')} and ${f('rating')} of the ${v(k)} best-rated games costing <em>less than</em> ${v(`£${n}`)}.`,
+          answer: `SELECT title, platform, rating FROM games WHERE price < ${n} ORDER BY rating DESC LIMIT ${k}`,
+          orderMatters: true,
+          check: res => res.rows.length === k,
+          hints: ['Filter by price, sort by rating, then LIMIT.', `WHERE price < ${n} ORDER BY rating DESC LIMIT ${k}`, `SELECT title, platform, rating FROM games WHERE price < ${n} ORDER BY rating DESC LIMIT ${k}`],
         };
       },
     },

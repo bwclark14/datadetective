@@ -36,7 +36,7 @@ export default {
   kind: 'Mission',
   colour: 'pink',
   blurb: 'You\'re a data analyst at a music streaming service. Dig into the numbers behind the hits.',
-  skills: ['WHERE', 'ORDER BY', 'LIMIT', 'SUM', 'COUNT', 'GROUP BY', 'LIKE'],
+  level: 2,
 
   generate() {
     return {
@@ -48,7 +48,7 @@ export default {
         ],
         rows: SONGS,
       }],
-      ctx: { genres: [...new Set(Object.values(ARTISTS))] },
+      ctx: { genres: [...new Set(Object.values(ARTISTS))], artists: Object.keys(ARTISTS) },
     };
   },
 
@@ -63,47 +63,55 @@ export default {
         return {
           prompt: `Show every field for ${v(g)} songs released in ${v(y)}.`,
           answer: `SELECT * FROM songs WHERE genre = ${sq(g)} AND year = ${y}`,
-          hints: ['Two conditions joined with AND.', `genre is text (quotes); year is a number (no quotes).`, `SELECT * FROM songs WHERE genre = '${g}' AND year = ${y}`],
+          hints: ['Two conditions joined with AND.', 'genre is text (quotes); year is a number (no quotes).', `SELECT * FROM songs WHERE genre = '${g}' AND year = ${y}`],
         };
       },
     },
     {
-      id: 'top',
+      id: 'alphabetical',
       build: rng => {
-        const k = rng.int(3, 5);
+        const y = rng.pick([2022, 2023, 2024]);
         return {
-          prompt: `Show the ${f('title')}, ${f('artist')} and ${f('streams')} of the top ${v(k)} most-streamed songs, biggest first.`,
-          answer: `SELECT title, artist, streams FROM songs ORDER BY streams DESC LIMIT ${k}`,
+          prompt: `Show the ${f('title')} and ${f('artist')} of every song released before ${v(y)}, in <em>alphabetical order</em> of title.`,
+          answer: `SELECT title, artist FROM songs WHERE year < ${y} ORDER BY title`,
           orderMatters: true,
-          hints: ['Sort, then limit.', `ORDER BY streams DESC LIMIT ${k}`, `SELECT title, artist, streams FROM songs ORDER BY streams DESC LIMIT ${k}`],
+          hints: ['ORDER BY sorts the results. It goes after WHERE.', 'A to Z is ascending order, which is what ORDER BY does unless you say otherwise.', `SELECT title, artist FROM songs WHERE year < ${y} ORDER BY title`],
         };
       },
     },
     {
-      id: 'artist-total',
-      build: () => ({
-        prompt: `Show each ${f('artist')} with their <em>total</em> number of streams across all their songs.`,
-        answer: 'SELECT artist, SUM(streams) FROM songs GROUP BY artist',
-        hints: ['Adding up needs SUM( ).', 'SELECT artist, SUM(streams) … GROUP BY artist', 'SELECT artist, SUM(streams) FROM songs GROUP BY artist'],
-      }),
-    },
-    {
-      id: 'per-genre',
-      build: () => ({
-        prompt: `Show each ${f('genre')} and <em>how many</em> songs there are in it.`,
-        answer: 'SELECT genre, COUNT(*) FROM songs GROUP BY genre',
-        hints: ['COUNT(*) with GROUP BY.', 'SELECT genre, COUNT(*) …', 'SELECT genre, COUNT(*) FROM songs GROUP BY genre'],
-      }),
+      id: 'big-hits',
+      build: rng => {
+        const m = rng.pick([5, 6, 7]);
+        return {
+          prompt: `Show the ${f('title')}, ${f('artist')} and ${f('streams')} of songs with more than ${v(`${m} million`)} streams, <em>biggest first</em>.`,
+          answer: `SELECT title, artist, streams FROM songs WHERE streams > ${m}000000 ORDER BY streams DESC`,
+          orderMatters: true,
+          hints: [`${m} million is written ${m}000000 — no commas.`, 'Biggest first is descending: add DESC after the field you sort by.', `SELECT title, artist, streams FROM songs WHERE streams > ${m}000000 ORDER BY streams DESC`],
+        };
+      },
     },
     {
       id: 'year-sorted',
       build: rng => {
         const y = rng.int(2021, 2026);
         return {
-          prompt: `Show the ${f('title')} and ${f('streams')} of songs released in ${v(y)}, <em>most streamed first</em>.`,
-          answer: `SELECT title, streams FROM songs WHERE year = ${y} ORDER BY streams DESC`,
+          prompt: `Show the ${f('title')} and ${f('streams')} of songs released in ${v(y)}, <em>least streamed first</em>.`,
+          answer: `SELECT title, streams FROM songs WHERE year = ${y} ORDER BY streams`,
           orderMatters: true,
-          hints: ['Filter, then sort.', 'ORDER BY streams DESC', `SELECT title, streams FROM songs WHERE year = ${y} ORDER BY streams DESC`],
+          hints: ['Filter, then sort.', 'Least first is ascending (ASC), the normal order.', `SELECT title, streams FROM songs WHERE year = ${y} ORDER BY streams`],
+        };
+      },
+    },
+    {
+      id: 'artist',
+      build: (rng, ctx) => {
+        const a = rng.pick(ctx.artists);
+        return {
+          prompt: `Show the ${f('title')} and ${f('year')} of every song by ${v(a)}, <em>newest first</em>. If two songs came out in the same year, put them in alphabetical order.`,
+          answer: `SELECT title, year FROM songs WHERE artist = ${sq(a)} ORDER BY year DESC, title`,
+          orderMatters: true,
+          hints: ['You can sort by two fields: the second one only matters when the first is the same.', 'ORDER BY year DESC, then a comma, then title.', `SELECT title, year FROM songs WHERE artist = '${a}' ORDER BY year DESC, title`],
         };
       },
     },
@@ -112,9 +120,10 @@ export default {
       build: rng => {
         const w = rng.pick(['Love', 'Night', 'Light', 'Heart']);
         return {
-          prompt: `The marketing team is making a playlist. Show the ${f('title')} and ${f('artist')} of every song with the word ${v(w)} anywhere in its title.`,
-          answer: `SELECT title, artist FROM songs WHERE title LIKE '%${w}%'`,
-          hints: ['LIKE matches patterns. % means "anything".', `title LIKE '%${w}%' finds ${w} anywhere.`, `SELECT title, artist FROM songs WHERE title LIKE '%${w}%'`],
+          prompt: `The marketing team is making a playlist. Show the ${f('title')} and ${f('artist')} of every song with the word ${v(w)} anywhere in its title, in alphabetical order of title.`,
+          answer: `SELECT title, artist FROM songs WHERE title LIKE '%${w}%' ORDER BY title`,
+          orderMatters: true,
+          hints: ['LIKE matches patterns. % means "anything".', `title LIKE '%${w}%' finds ${w} anywhere. Then sort.`, `SELECT title, artist FROM songs WHERE title LIKE '%${w}%' ORDER BY title`],
         };
       },
     },

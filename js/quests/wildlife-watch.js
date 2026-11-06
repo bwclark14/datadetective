@@ -38,7 +38,7 @@ export default {
   kind: 'Environment & ethics',
   colour: 'green',
   blurb: 'Eight years of volunteer wildlife surveys across Scotland. Which animals are in trouble — and what should we do?',
-  skills: ['WHERE', 'AND', 'OR', 'DISTINCT', 'LIKE', 'MAX', 'SUM', 'AVG', 'COUNT', 'GROUP BY', 'ORDER BY'],
+  level: 6,
 
   generate(rng) {
     const rows = [];
