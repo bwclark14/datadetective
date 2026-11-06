@@ -126,7 +126,15 @@ await check('my data: sample loads, types toggle, table queries and exports', as
   await p.goto(`${BASE}/mydata.html`);
   await p.waitFor('!!document.querySelector(".samples button")');
   await p.click('.samples button');
-  await p.waitFor('!!document.querySelector(".type-toggle")');
+  await p.waitFor('!!document.querySelector(".type-select")');
+  const sel = n => `document.querySelectorAll('.type-select')[${n}]`;
+  assert.equal(await p.eval(`${sel(3)}.value`), 'real', 'hours of sleep guessed as Real');
+  await p.eval(`(() => { const s = ${sel(0)}; s.value = 'integer'; s.dispatchEvent(new Event('change')); })()`);
+  await p.waitFor('!!document.querySelector(".misfit")');
+  assert.match(await p.eval('document.querySelector(".misfit").textContent'), /40 values don't fit/);
+  await p.eval(`(() => { const s = ${sel(0)}; s.value = 'text'; s.dispatchEvent(new Event('change')); })()`);
+  await p.waitFor('!document.querySelector(".misfit")');
+  await p.eval('document.querySelector(".type-guide").open = true');
   await p.screenshot(`${out}/mydata-preview.png`);
   await p.click('[aria-label="Check your data"] .field-row .btn-primary');
   await p.waitFor('!!document.querySelector("[data-zone=select]")');
@@ -148,7 +156,7 @@ await check('live data: weather and electricity load and query', async () => {
   await p.waitFor('!!document.querySelector(".live-option")');
   await p.eval(`document.querySelector('#live-place').value = 'Inverness'`);
   await p.click('.live-option:nth-child(1) .btn-primary');
-  await p.waitFor('!!document.querySelector(".type-toggle")');
+  await p.waitFor('!!document.querySelector(".type-select")');
   assert.equal(await p.eval('document.querySelector("#table-name").value'), 'weather_inverness');
   assert.match(await p.eval('document.querySelector(".panel .credit").textContent'), /Open-Meteo/);
   await p.screenshot(`${out}/live-preview.png`);
@@ -156,7 +164,7 @@ await check('live data: weather and electricity load and query', async () => {
   await p.waitFor('!!document.querySelector("[data-zone=select]")');
   assert.match(await p.eval('document.querySelector(".starters").textContent'), /windiest/);
   await p.click('.live-option:nth-child(3) .btn-primary');
-  await p.waitFor('!!document.querySelector(".type-toggle")');
+  await p.waitFor('!!document.querySelector(".type-select")');
   await p.click('[aria-label="Check your data"] .field-row .btn-primary');
   await p.waitFor('document.querySelectorAll(".table-tabs .btn").length === 3');
   await p.click('.mode-switch button:nth-child(3)');
@@ -176,7 +184,7 @@ await check('live data: blocked service offers the saved example', async () => {
     await p.waitFor('!!document.querySelector(".notice.bad button")');
     assert.match(await p.eval('document.querySelector(".notice.bad").textContent'), /could not be reached/);
     await p.click('.notice.bad button');
-    await p.waitFor('!!document.querySelector(".type-toggle")');
+    await p.waitFor('!!document.querySelector(".type-select")');
     assert.match(await p.eval('document.querySelector(".panel .notice").textContent'), /saved example/);
   } finally {
     liveRoutes['api.open-meteo.com'] = saved;

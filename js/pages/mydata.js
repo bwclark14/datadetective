@@ -1,6 +1,7 @@
 import { createDb } from '../db.js';
 import { createEditor, MODES } from '../editor/editor.js';
-import { prepareCSV, buildTable, tableNameFromFile, sanitizeName, toCSV, starterChallenges } from '../csv.js';
+import { prepareCSV, buildTable, tableNameFromFile, sanitizeName, toCSV, starterChallenges, columnMisfits } from '../csv.js';
+import { DATA_TYPES, typeLabel, isNumericType } from '../types.js';
 import { checkReadOnly } from '../query-model.js';
 import { friendlyError } from '../marking.js';
 import { getPref, setPref } from '../progress.js';
@@ -106,7 +107,7 @@ async function start() {
       if (!table.rows.length) throw new Error('The service sent back no readings.');
       const time = new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
       showPreview(`${table.name}.csv`, toCSV(table.columns, table.rows), undefined, {
-        name: table.name, credit: source.credit, starters: table.starters,
+        name: table.name, credit: source.credit, starters: table.starters, types: table.types,
         note: `Live data fetched at ${time} today.`,
       });
     } catch (e) {
@@ -124,7 +125,7 @@ async function start() {
       const starters = { weatherWeek: weatherWeekStarters('Glasgow'), weatherScotland: WEATHER_SCOTLAND_STARTERS, electricity: ELECTRICITY_STARTERS }[sourceId];
       const name = { weatherWeek: 'weather_example', weatherScotland: 'weather_scotland_example', electricity: 'electricity_example' }[sourceId];
       showPreview(`${name}.csv`, await res.text(), undefined, {
-        name, starters,
+        name, starters, types: source.types,
         note: 'This is a saved example made to look like real data — not today\'s readings.',
       });
     } catch {
@@ -136,20 +137,24 @@ async function start() {
     const prepared = prepareCSV(text, { bytes });
     if (!prepared.ok) { say(prepared.error, 'bad'); preview.replaceChildren(); return; }
     say('');
-    const types = prepared.types.slice();
+    const types = meta.types && meta.types.length === prepared.types.length ? meta.types.slice() : prepared.types.slice();
     const nameInput = el('input', { type: 'text', value: uniqueTableName(meta.name || tableNameFromFile(fileName)), id: 'table-name', 'aria-describedby': 'table-name-help' });
     const tableBox = el('div');
 
     const drawTable = () => {
-      const head = el('tr', {}, prepared.names.map((n, j) => el('th', { scope: 'col' },
-        n,
-        n !== prepared.original[j] ? el('span', { class: 'renamed' }, `was "${prepared.original[j]}"`) : null,
-        el('span', { class: 'type-toggle', role: 'group', 'aria-label': `Type of ${n}` },
-          ['number', 'text'].map(tp => el('button', {
-            type: 'button', 'aria-pressed': String(types[j] === tp),
-            onclick: () => { types[j] = tp; drawTable(); },
-          }, tp === 'number' ? 'Number' : 'Text'))))));
-      const body = prepared.rows.slice(0, 10).map(r => el('tr', {}, r.map((c, j) => el('td', { class: types[j] === 'number' ? 'num' : null }, c))));
+      const head = el('tr', {}, prepared.names.map((n, j) => {
+        const misfits = columnMisfits(prepared, j, types[j]);
+        const select = el('select', { class: 'type-select', 'aria-label': `Data type of ${n}` },
+          DATA_TYPES.map(tp => el('option', { value: tp.id, selected: types[j] === tp.id ? true : null }, tp.label)));
+        select.addEventListener('change', () => { types[j] = select.value; drawTable(); tableBox.querySelectorAll('.type-select')[j]?.focus(); });
+        return el('th', { scope: 'col' },
+          n,
+          n !== prepared.original[j] ? el('span', { class: 'renamed' }, `was "${prepared.original[j]}"`) : null,
+          select,
+          misfits ? el('span', { class: 'misfit', role: 'status' },
+            `${misfits} value${misfits === 1 ? " doesn't" : "s don't"} fit — ${misfits === 1 ? 'it' : 'they'}'ll be left empty`) : null);
+      }));
+      const body = prepared.rows.slice(0, 10).map(r => el('tr', {}, r.map((c, j) => el('td', { class: isNumericType(types[j]) ? 'num' : null }, c))));
       tableBox.replaceChildren(el('div', { class: 'results-wrap' }, el('table', { class: 'data' }, el('thead', {}, head), el('tbody', {}, body))));
     };
     drawTable();
@@ -162,9 +167,12 @@ async function start() {
     preview.replaceChildren(el('section', { class: 'panel', 'aria-label': 'Check your data' },
       el('h2', {}, 'Check your data'),
       meta.note ? el('p', { class: 'notice' }, meta.note, meta.credit ? el('span', { class: 'credit' }, meta.credit) : null) : null,
-      el('p', {}, `${prepared.rows.length} rows and ${prepared.names.length} columns. Here are the first 10 rows. Check each column's type: `,
-        el('strong', {}, 'Number'), ' columns can be added up, averaged and compared by size; ',
-        el('strong', {}, 'Text'), ' columns are compared letter by letter — so "10" comes before "9".'),
+      el('p', {}, `${prepared.rows.length} rows and ${prepared.names.length} columns. Here are the first 10 rows. `,
+        'Choose the best data type for each column — the menu shows a guess. Getting it right matters: you can only add up and average numbers, and text is compared letter by letter, so "10" comes before "9".'),
+      el('details', { class: 'type-guide' },
+        el('summary', {}, 'Which type should I choose?'),
+        el('dl', {}, DATA_TYPES.flatMap(tp => [el('dt', {}, tp.label), el('dd', {}, tp.help)])),
+        el('p', { class: 'muted' }, 'UK dates like 03/11/2026 are changed to 2026-11-03. Boolean columns are stored as 1 (TRUE) and 0 (FALSE), so query them with = TRUE or = FALSE.')),
       notes.map(n => el('p', { class: 'notice warn' }, n)),
       tableBox,
       el('div', { class: 'field-row' },
@@ -192,7 +200,7 @@ async function start() {
     try { db.load([def]); } catch (e) { say(`The table couldn't be created: ${e.message}`, 'bad'); return; }
     preview.replaceChildren();
     active = name;
-    say(`Created table ${name} with ${def.rows.length} rows.${blanked ? ` ${blanked} cell${blanked === 1 ? '' : 's'} in number columns weren't numbers, so they were left empty.` : ''}`, 'good');
+    say(`Created table ${name} with ${def.rows.length} rows.${blanked ? ` ${blanked} cell${blanked === 1 ? " didn't" : "s didn't"} fit ${blanked === 1 ? 'its' : 'their'} column's type, so ${blanked === 1 ? 'it was' : 'they were'} left empty.` : ''}`, 'good');
     drawWorkspace();
   }
 
@@ -225,7 +233,7 @@ async function start() {
     workspace.replaceChildren(el('div', { class: 'workspace', style: 'margin-top:20px' },
       el('div', { class: 'case-side' },
         el('section', { class: 'panel' }, el('h2', {}, 'Your tables'), tabs,
-          el('p', { class: 'columns-list' }, def.columns.map(c => `${c.name} (${c.type})`).join(', ')),
+          el('p', { class: 'columns-list' }, def.columns.map(c => `${c.name} (${typeLabel(c.type)})`).join(', ')),
           el('p', { class: 'muted' }, `${def.rows.length} records.`),
           info.credit ? el('p', { class: 'credit' }, info.credit) : null),
         starters),

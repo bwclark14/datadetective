@@ -5,7 +5,7 @@
 //   {t:'agg', fn, arg}           arg is '*' or a field name
 //   {t:'table', name}            {t:'op', op}           =, <>, <, >, <=, >=, LIKE
 //   {t:'logic', op}              AND, OR, NOT           {t:'paren', p}  ( or )
-//   {t:'value', value, vtype}    vtype 'number' | 'text'
+//   {t:'value', value, vtype}    vtype 'number' | 'text' | 'boolean'
 //   {t:'dir', dir}               ASC, DESC
 // Tiles mode also uses {t:'kw', kw} for clause keywords and {t:'comma'}.
 //
@@ -25,7 +25,7 @@ const KEYWORDS = new Set([
   'BETWEEN', 'HAVING', 'UNION', 'TABLE', 'INSERT', 'UPDATE', 'DELETE', 'DROP',
   'CREATE', 'ALTER', 'VALUES', 'INTO', 'SET', 'CASE', 'WHEN', 'THEN', 'ELSE',
   'END', 'INNER', 'LEFT', 'RIGHT', 'OUTER', 'CROSS', 'OFFSET', 'WITH', 'INDEX',
-  'PRIMARY', 'KEY', 'DEFAULT', 'CHECK', 'EXISTS', 'ALL', 'ANY', 'GLOB', 'ESCAPE',
+  'PRIMARY', 'KEY', 'DEFAULT', 'CHECK', 'EXISTS', 'ALL', 'ANY', 'GLOB', 'ESCAPE', 'TRUE', 'FALSE',
 ]);
 
 export function isSqlKeyword(word) { return KEYWORDS.has(String(word).toUpperCase()); }
@@ -42,6 +42,7 @@ export function quoteIdent(name) {
 
 export function quoteValue(chip) {
   if (chip.vtype === 'number') return String(chip.value);
+  if (chip.vtype === 'boolean') return chip.value ? 'TRUE' : 'FALSE';
   return `'${String(chip.value).replace(/'/g, "''")}'`;
 }
 
@@ -248,6 +249,7 @@ export function parseSQL(text) {
         const up = t.type === 'word' ? t.text.toUpperCase() : '';
         if (t.type === 'string') q.where.push({ t: 'value', value: t.value, vtype: 'text' });
         else if (t.type === 'number') q.where.push({ t: 'value', value: t.value, vtype: 'number' });
+        else if (up === 'TRUE' || up === 'FALSE') q.where.push({ t: 'value', value: up === 'TRUE', vtype: 'boolean' });
         else if (t.type === 'op') q.where.push({ t: 'op', op: t.text === '!=' ? '<>' : t.text === '==' ? '=' : t.text });
         else if (up === 'LIKE') q.where.push({ t: 'op', op: 'LIKE' });
         else if (['AND', 'OR', 'NOT'].includes(up)) q.where.push({ t: 'logic', op: up });
@@ -329,6 +331,7 @@ export function tilesFromSQL(text) {
     else if (t.type === 'op') tiles.push({ t: 'op', op: t.text === '!=' ? '<>' : t.text });
     else if (t.type === 'string') tiles.push({ t: 'value', value: t.value, vtype: 'text' });
     else if (t.type === 'number') tiles.push({ t: 'value', value: t.value, vtype: 'number' });
+    else if (up === 'TRUE' || up === 'FALSE') tiles.push({ t: 'value', value: up === 'TRUE', vtype: 'boolean' });
     else if (t.type === 'comma') tiles.push({ t: 'comma' });
     else if (t.type === 'star') tiles.push({ t: 'star' });
     else if (t.type === 'lparen') tiles.push({ t: 'paren', p: '(' });

@@ -166,10 +166,10 @@ Hints: up to 3 per question, progressively more specific (clause → field → p
 
 ## 7. My Data (CSV)
 
-Flow: choose/drop file or pick a sample → preview first 10 rows with sanitised column names and type badges → pupil can toggle Number/Text per column → name the table (suggested from file name) → Create table → editor opens with that table's chips.
+Flow: choose/drop file or pick a sample → preview first 10 rows with sanitised column names and a data type menu per column → name the table (suggested from file name) → Create table → editor opens with that table's chips.
 
 - Parsing: RFC 4180-style (quoted fields, embedded commas/newlines, `""` escapes), BOM stripped, comma or semicolon delimiter auto-detected, CRLF/LF.
-- Type guess: a column is Number if ≥95% of non-empty values parse as numbers; values with leading zeros (e.g. `0123`) keep the column as Text.
+- Data types (added after v2 launch): Text, Integer, Real, Date, Time, Boolean, chosen per column from a menu with a guess preselected (a type is guessed when ≥95% of non-empty values fit; leading zeros keep a column as Text). Values that don't fit are counted and flagged, then stored as empty. Dates are normalised to YYYY-MM-DD (UK day-first input), times to HH:MM, Booleans to 1/0 and queried with TRUE/FALSE.
 - Names: lowercase, spaces/punctuation → `_`, leading digit prefixed with `col_`, SQL keywords suffixed with `_`, duplicates numbered. Original → new name shown.
 - Limits: 5 MB, 20,000 rows, 50 columns. Friendly messages for empty file, no header, ragged rows (short rows padded with empty, long rows trimmed, count reported), unparseable numbers (stored as NULL, count reported).
 - Several files can be loaded as separate tables; one table is queried at a time (table chooser).

@@ -8,6 +8,7 @@ export function parseValueInput(raw) {
   if (!text) return null;
   const quoted = /^(['"])(.*)\1$/s.exec(text);
   if (quoted) return { t: 'value', value: quoted[2], vtype: 'text' };
+  if (/^(true|false)$/i.test(text)) return { t: 'value', value: /^true$/i.test(text), vtype: 'boolean' };
   if (isNumberText(text)) return { t: 'value', value: Number(text), vtype: 'number' };
   return { t: 'value', value: text, vtype: 'text' };
 }

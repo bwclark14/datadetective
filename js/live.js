@@ -25,16 +25,19 @@ export const SOURCES = {
     label: 'Weather this week',
     credit: 'Weather data from Open-Meteo.com (CC BY 4.0)',
     example: 'samples/live/weather-week-example.csv',
+    types: ['date', 'time', 'integer', 'real', 'real', 'real', 'integer', 'integer'],
   },
   weatherScotland: {
     label: 'Weather around Scotland',
     credit: 'Weather data from Open-Meteo.com (CC BY 4.0)',
     example: 'samples/live/weather-scotland-example.csv',
+    types: ['text', 'date', 'real', 'real', 'real', 'real'],
   },
   electricity: {
     label: 'Scotland\'s electricity',
     credit: 'Electricity data from the Carbon Intensity API, National Energy System Operator (CC BY 4.0)',
     example: 'samples/live/electricity-scotland-example.csv',
+    types: ['text', 'date', 'time', 'integer', 'text', 'real', 'real', 'real', 'real', 'real', 'real', 'real', 'real', 'real'],
   },
 };
 
@@ -164,15 +167,15 @@ export async function fetchLive(sourceId, { place, fetchImpl = fetch, now = new 
   if (sourceId === 'weatherWeek') {
     const p = PLACES.find(x => x.name === place) || PLACES.find(x => x.name === 'Glasgow');
     const t = weatherWeekRows(await getJSON(weatherWeekUrl(p), fetchImpl), now);
-    return { ...t, name: `weather_${p.name.toLowerCase().replace(/\W+/g, '_')}`, starters: weatherWeekStarters(p.name) };
+    return { ...t, types: SOURCES.weatherWeek.types, name: `weather_${p.name.toLowerCase().replace(/\W+/g, '_')}`, starters: weatherWeekStarters(p.name) };
   }
   if (sourceId === 'weatherScotland') {
     const results = await Promise.all(PLACES.map(async pl => ({ place: pl.name, json: await getJSON(weatherDailyUrl(pl), fetchImpl) })));
-    return { ...weatherScotlandRows(results, now), name: 'weather_scotland', starters: WEATHER_SCOTLAND_STARTERS };
+    return { ...weatherScotlandRows(results, now), types: SOURCES.weatherScotland.types, name: 'weather_scotland', starters: WEATHER_SCOTLAND_STARTERS };
   }
   if (sourceId === 'electricity') {
     const results = await Promise.all(CARBON_REGIONS.map(async r => ({ region: r.name, json: await getJSON(carbonUrl(r.id, now), fetchImpl) })));
-    return { ...electricityRows(results), name: 'electricity_scotland', starters: ELECTRICITY_STARTERS };
+    return { ...electricityRows(results), types: SOURCES.electricity.types, name: 'electricity_scotland', starters: ELECTRICITY_STARTERS };
   }
   throw new Error(`Unknown data source: ${sourceId}`);
 }

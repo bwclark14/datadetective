@@ -98,13 +98,16 @@ details.peek .results-wrap { max-height: 260px; }
 .dropzone.over { border-color: var(--focus); background: color-mix(in srgb, var(--focus) 6%, var(--surface)); }
 .dropzone p { margin: 0 auto; }
 .samples { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
-.type-toggle {
-  display: flex; width: max-content; margin-top: 4px; border: 1px solid var(--line); border-radius: 999px; overflow: hidden;
+.type-select {
+  display: block; margin-top: 4px; min-height: 30px; padding: 2px 6px; border: 1px solid var(--line); border-radius: 6px;
+  font: 600 .8rem var(--font-body); background: var(--surface); color: var(--ink);
 }
-.type-toggle button {
-  border: 0; background: transparent; padding: 2px 9px; font: 600 .75rem var(--font-body); color: var(--ink-soft); cursor: pointer;
-}
-.type-toggle button[aria-pressed="true"] { background: var(--ink); color: var(--surface); }
+.misfit { display: block; max-width: 16em; white-space: normal; margin-top: 4px; font: 400 .75rem var(--font-body); color: var(--warn); }
+.type-guide { margin: 8px 0 12px; }
+.type-guide summary { cursor: pointer; font-weight: 700; }
+.type-guide dl { display: grid; grid-template-columns: max-content 1fr; gap: 4px 14px; margin: 8px 0; }
+.type-guide dt { font-weight: 700; }
+.type-guide dd { margin: 0; color: var(--ink-soft); }
 .renamed { display: block; font-weight: 400; font-size: .75rem; color: var(--ink-soft); }
 .field-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin: 12px 0; }
 .field-row input {
