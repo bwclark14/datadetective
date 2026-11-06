@@ -128,7 +128,7 @@ export async function launchBrowser({ width = 1280, height = 900, routes = {} } 
       consoleLog.push(`${msg.params.type}: ${msg.params.args.map(a => a.value ?? a.description).join(' ')}`);
     }
   });
-  await s('Fetch.enable', { patterns: [{ urlPattern: '*cdnjs.cloudflare.com*' }, { urlPattern: '*fonts.googleapis.com*' }, { urlPattern: '*fonts.gstatic.com*' }, { urlPattern: '*api.open-meteo.com*' }, { urlPattern: '*api.carbonintensity.org.uk*' }] });
+  await s('Fetch.enable', { patterns: [{ urlPattern: '*cdnjs.cloudflare.com*' }, { urlPattern: '*fonts.googleapis.com*' }, { urlPattern: '*fonts.gstatic.com*' }, { urlPattern: '*open-meteo.com*' }, { urlPattern: '*api.carbonintensity.org.uk*' }, { urlPattern: '*swpc.noaa.gov*' }, { urlPattern: '*earthquake.usgs.gov*' }, { urlPattern: '*api.inaturalist.org*' }, { urlPattern: '*timeseries.sepa.org.uk*' }] });
   await s('Runtime.enable');
   await s('Page.enable');
   await s('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: 1, mobile: width < 600 });

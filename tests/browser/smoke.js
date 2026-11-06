@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import { startQuest } from '../../js/quest-engine.js';
 import { findQuest } from '../../js/quests/index.js';
 import { makeRunner } from '../helpers.js';
-import { openMeteoHourly, openMeteoDaily, carbonRegional } from '../fixtures.js';
+import { fixtureFetch } from '../fixtures.js';
 
 const out = process.argv[2] || '.';
 const BASE = 'http://127.0.0.1:8765';
@@ -21,8 +21,12 @@ const check = async (name, fn) => {
 
 const server = await startServer();
 const liveRoutes = {
-  'api.open-meteo.com': url => (url.includes('daily=') ? openMeteoDaily() : openMeteoHourly()),
-  'api.carbonintensity.org.uk': url => carbonRegional(url.endsWith('/1') ? 1 : 2, 'Scotland'),
+  'open-meteo.com': fixtureFetch,
+  'api.carbonintensity.org.uk': fixtureFetch,
+  'swpc.noaa.gov': fixtureFetch,
+  'earthquake.usgs.gov': fixtureFetch,
+  'api.inaturalist.org': fixtureFetch,
+  'timeseries.sepa.org.uk': fixtureFetch,
 };
 const desktop = await launchBrowser({ width: 1280, height: 900, routes: liveRoutes });
 const p = desktop.page;
@@ -154,16 +158,17 @@ await check('live data: weather and electricity load and query', async () => {
   liveRoutes.enabled = true;
   await p.goto(`${BASE}/mydata.html`);
   await p.waitFor('!!document.querySelector(".live-option")');
-  await p.eval(`document.querySelector('#live-place').value = 'Inverness'`);
-  await p.click('.live-option:nth-child(1) .btn-primary');
+  await p.eval(`document.querySelector('#live-place-weatherWeek').value = 'Inverness'`);
+  await p.click('[data-source=weatherWeek]');
   await p.waitFor('!!document.querySelector(".type-select")');
   assert.equal(await p.eval('document.querySelector("#table-name").value'), 'weather_inverness');
-  assert.match(await p.eval('document.querySelector(".panel .credit").textContent'), /Open-Meteo/);
+  assert.match(await p.eval('document.querySelector(".about-data .credit").textContent'), /Open-Meteo/);
+  assert.match(await p.eval('document.querySelector(".about-data").textContent'), /humidity_pct.*How damp the air is/);
   await p.screenshot(`${out}/live-preview.png`);
   await p.click('[aria-label="Check your data"] .field-row .btn-primary');
   await p.waitFor('!!document.querySelector("[data-zone=select]")');
   assert.match(await p.eval('document.querySelector(".starters").textContent'), /windiest/);
-  await p.click('.live-option:nth-child(3) .btn-primary');
+  await p.click('[data-source=electricity]');
   await p.waitFor('!!document.querySelector(".type-select")');
   await p.click('[aria-label="Check your data"] .field-row .btn-primary');
   await p.waitFor('document.querySelectorAll(".table-tabs .btn").length === 3');
@@ -175,20 +180,37 @@ await check('live data: weather and electricity load and query', async () => {
 });
 
 await check('live data: blocked service offers the saved example', async () => {
-  const saved = liveRoutes['api.open-meteo.com'];
-  liveRoutes['api.open-meteo.com'] = () => null;
+  const saved = liveRoutes['open-meteo.com'];
+  liveRoutes['open-meteo.com'] = () => null;
   try {
     await p.goto(`${BASE}/mydata.html`);
     await p.waitFor('!!document.querySelector(".live-option")');
-    await p.click('.live-option:nth-child(2) .btn-primary');
+    await p.click('[data-source=weatherScotland]');
     await p.waitFor('!!document.querySelector(".notice.bad button")');
     assert.match(await p.eval('document.querySelector(".notice.bad").textContent'), /could not be reached/);
     await p.click('.notice.bad button');
     await p.waitFor('!!document.querySelector(".type-select")');
     assert.match(await p.eval('document.querySelector(".panel .notice").textContent'), /saved example/);
+    assert.ok(await p.eval('!!document.querySelector(".about-data")'), 'saved example has a description too');
   } finally {
-    liveRoutes['api.open-meteo.com'] = saved;
+    liveRoutes['open-meteo.com'] = saved;
   }
+});
+
+await check('live data: all eight sources load with a description', async () => {
+  await p.goto(`${BASE}/mydata.html`);
+  await p.waitFor('document.querySelectorAll("[data-source]").length === 8');
+  const ids = await p.eval('[...document.querySelectorAll("[data-source]")].map(b => b.dataset.source)');
+  for (const id of ids) {
+    await p.click(`[data-source=${id}]`);
+    await p.waitFor('!!document.querySelector(".about-data") && !!document.querySelector(".type-select")', 8000);
+    const text = await p.eval('document.querySelector(".about-data").textContent');
+    assert.match(text, /What the columns mean/, id);
+    await p.click('[aria-label="Check your data"] .field-row .btn-primary');
+    await p.waitFor('!!document.querySelector(".about-data.panel")');
+    if (id === 'earthquakes') await p.screenshot(`${out}/live-earthquakes.png`);
+  }
+  assert.equal(await p.eval('document.querySelectorAll(".table-tabs .btn-small").length'), 9, '8 tables plus remove button');
 });
 
 await check('a full quest can be finished', async () => {

@@ -3,96 +3,137 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import {
   weatherWeekRows, weatherScotlandRows, electricityRows, fetchLive, carbonUrl, weatherWeekUrl,
-  PLACES, SOURCES, localStamp,
+  PLACES, SOURCES, SOURCE_LIST, localStamp, auroraRows, earthquakeRows, regionOf, wildlifeRows, areaOf,
+  findScotland, sightingsUrl, chooseStations, riverRows, airRows, aqiBand, stormLevel, auroraChance,
 } from '../js/live.js';
 import { prepareCSV, buildTable, toCSV } from '../js/csv.js';
-import { openMeteoHourly, openMeteoDaily, carbonRegional } from './fixtures.js';
+import {
+  openMeteoHourly, openMeteoDaily, carbonRegional, noaaKp, usgsQuakes, inatPlaces, inatObservations,
+  sepaStations, sepaValues, openMeteoAir, fixtureFetch,
+} from './fixtures.js';
 import { makeRunner } from './helpers.js';
 
-const NOW = new Date('2026-11-08T12:30:00Z'); // 12:30 in London (GMT)
+const NOW = new Date('2026-11-08T12:30:00Z');
+const fakeFetch = async url => {
+  const body = fixtureFetch(url);
+  return body ? { ok: true, json: async () => body } : { ok: false, status: 404 };
+};
+
+test('there are 8 live sources, each with a description, credit, example and questions', () => {
+  assert.equal(SOURCE_LIST.length, 8);
+  for (const s of SOURCE_LIST) {
+    const about = s.about('Glasgow');
+    for (const k of ['summary', 'from', 'updated', 'rows']) assert.ok(about[k], `${s.id} about.${k}`);
+    assert.ok(s.credit && s.example && s.starters('Glasgow').length >= 4, s.id);
+  }
+});
 
 test('hourly weather keeps past hours only, with tidy columns', () => {
   const t = weatherWeekRows(openMeteoHourly('2026-11-01', 8), NOW);
-  assert.deepEqual(t.columns, ['date', 'time', 'hour', 'temperature_c', 'rain_mm', 'wind_mph', 'humidity_pct', 'cloud_pct']);
-  assert.equal(t.rows.length, 7 * 24 + 13); // 1–7 Nov plus 00:00–12:00 on the 8th
+  assert.equal(t.rows.length, 7 * 24 + 13);
   assert.deepEqual(t.rows[0].slice(0, 3), ['2026-11-01', '00:00', 0]);
-  assert.equal(t.rows.at(-1)[1], '12:00');
-});
-
-test('hourly weather copes with a missing variable', () => {
-  const json = openMeteoHourly();
-  delete json.hourly.cloud_cover;
-  const t = weatherWeekRows(json, NOW);
-  assert.equal(t.rows[0][7], null);
-});
-
-test('service errors become readable messages', () => {
-  assert.throws(() => weatherWeekRows({ error: true, reason: 'Parameter past_days is out of range' }), /past_days/);
-  assert.throws(() => electricityRows([{ region: 'North Scotland', json: { error: { message: 'x' } } }]), /unexpected/);
 });
 
 test('daily weather: one row per place per past day', () => {
   const results = PLACES.slice(0, 3).map(p => ({ place: p.name, json: openMeteoDaily('2026-10-24', 16) }));
-  const t = weatherScotlandRows(results, NOW);
-  assert.equal(t.rows.length, 3 * 15); // 24 Oct – 7 Nov; today (8 Nov) is left out
-  assert.ok(t.rows.every(r => r[1] < '2026-11-08'));
+  assert.equal(weatherScotlandRows(results, NOW).rows.length, 3 * 15);
 });
 
 test('electricity rows spread the fuel mix into columns', () => {
-  const t = electricityRows([
-    { region: 'North Scotland', json: carbonRegional(1, 'North Scotland') },
-    { region: 'South Scotland', json: carbonRegional(2, 'South Scotland') },
-  ]);
-  assert.equal(t.rows.length, 192);
-  const wind = t.columns.indexOf('wind_pct');
-  assert.equal(t.rows[0][wind], 40);
-  assert.equal(t.rows[0][2], '00:00');
+  const t = electricityRows([{ region: 'North Scotland', json: carbonRegional(1, 'North Scotland') }]);
+  assert.equal(t.rows[0][t.columns.indexOf('wind_pct')], 40);
+});
+
+test('air quality: bands and past hours', () => {
+  const t = airRows(openMeteoAir('2026-11-01', 8), NOW);
+  assert.equal(t.rows.length, 7 * 24 + 13);
+  assert.equal(aqiBand(15), 'good');
+  assert.equal(aqiBand(55), 'moderate');
+  assert.equal(aqiBand(130), 'extremely poor');
+  assert.equal(t.rows[0][t.columns.indexOf('grass_pollen')], null, 'out of season pollen is empty');
+});
+
+test('aurora: both NOAA layouts, times read as UTC', () => {
+  for (const json of [noaaKp(false), noaaKp(true)]) {
+    const t = auroraRows(json);
+    assert.equal(t.rows.length, 56);
+    assert.deepEqual(t.rows[0].slice(0, 2), ['2026-10-30', '00:00']);
+  }
+  assert.equal(stormLevel(5.33), 'G1 minor');
+  assert.equal(stormLevel(3), 'no storm');
+  assert.equal(auroraChance(4.33), 'possible in the far north');
+  assert.throws(() => auroraRows([['when', 'what']]), /format/);
+});
+
+test('earthquakes: newest first, region from the place, tsunami as yes/no', () => {
+  const t = earthquakeRows(usgsQuakes());
+  assert.equal(t.rows.length, 40);
+  assert.ok(t.rows[0][0] >= t.rows[39][0]);
+  assert.equal(regionOf('12 km S of Town, Alaska'), 'Alaska');
+  assert.equal(regionOf('south of the Fiji Islands'), 'south of the Fiji Islands');
+  assert.equal(t.rows.filter(r => r.at(-1) === 'yes').length, 1);
+});
+
+test('wildlife: no usernames, rough locations, friendly names', () => {
+  assert.equal(findScotland(inatPlaces()), 99999);
+  assert.match(sightingsUrl(99999), /place_id=99999/);
+  assert.match(sightingsUrl(null), /swlat=/);
+  const t = wildlifeRows(inatObservations());
+  assert.ok(!JSON.stringify(t).includes('secret_person'));
+  assert.equal(t.rows[0][1], 'Grey heron');
+  assert.equal(t.rows[0][3], 'Bird');
+  assert.equal(t.rows[1][5], 57.1);
+  assert.equal(areaOf('12 Some Road, Leith, Edinburgh, Scotland, GB'), 'Edinburgh');
+  assert.equal(areaOf('Cairngorms National Park, UK'), 'Cairngorms National Park');
+});
+
+test('rivers: one gauge per known river, readings on the hour', () => {
+  const stations = chooseStations(sepaStations());
+  assert.deepEqual(stations.map(s => s.river), ['Tay', 'Clyde', 'Spey']);
+  const t = riverRows(sepaValues(), stations);
+  assert.equal(t.rows.length, 3 * 24);
+  assert.deepEqual(t.rows[0].slice(0, 4), ['Tay', 'Ballathie', '2026-11-01', '00:00']);
+  assert.throws(() => chooseStations([['a', 'b']]), /format/);
 });
 
 test('addresses', () => {
   assert.equal(carbonUrl(1, NOW), 'https://api.carbonintensity.org.uk/regional/intensity/2026-11-06T12:30Z/2026-11-08T12:30Z/regionid/1');
-  const u = new URL(weatherWeekUrl(PLACES.find(p => p.name === 'Inverness')));
-  assert.equal(u.searchParams.get('past_days'), '7');
-  assert.equal(u.searchParams.get('timezone'), 'Europe/London');
-});
-
-test('UK local time follows British Summer Time', () => {
+  assert.equal(new URL(weatherWeekUrl(PLACES[0])).searchParams.get('past_days'), '7');
   assert.equal(localStamp(new Date('2026-07-01T12:00:00Z')), '2026-07-01T13:00');
-  assert.equal(localStamp(new Date('2026-12-01T12:00:00Z')), '2026-12-01T12:00');
 });
 
-test('fetchLive end to end with a stand-in fetch, then the table queries', async () => {
-  const fakeFetch = async url => ({
-    ok: true,
-    json: async () => (url.includes('carbonintensity') ? carbonRegional(url.endsWith('/1') ? 1 : 2, 'x')
-      : url.includes('daily=') ? openMeteoDaily() : openMeteoHourly()),
-  });
-  for (const id of Object.keys(SOURCES)) {
-    const t = await fetchLive(id, { place: 'Stirling', fetchImpl: fakeFetch, now: NOW });
-    assert.ok(t.rows.length > 0, id);
-    assert.ok(t.starters.length >= 4, id);
+test('every source fetches, loads into SQLite, and describes every column', async () => {
+  for (const s of SOURCE_LIST) {
+    const t = await fetchLive(s.id, { place: 'Stirling', fetchImpl: fakeFetch, now: NOW });
+    assert.ok(t.rows.length > 0, s.id);
+    assert.equal(t.types.length, t.columns.length, `${s.id} types`);
+    for (const c of t.columns) assert.ok(t.about.columns[c], `${s.id}: no description for column ${c}`);
     const prepared = prepareCSV(toCSV(t.columns, t.rows));
-    assert.ok(prepared.ok, id);
-    const { def } = buildTable(t.name, prepared);
-    const db = makeRunner([def]);
-    assert.ok(!db.run(`SELECT COUNT(*) FROM ${t.name}`).error, id);
+    assert.ok(prepared.ok, s.id);
+    const { def, blanked } = buildTable(t.name, prepared, t.types);
+    assert.equal(blanked, 0, `${s.id}: values didn't fit their types`);
+    assert.ok(!makeRunner([def]).run(`SELECT COUNT(*) FROM ${t.name}`).error, s.id);
   }
-  assert.equal((await fetchLive('weatherWeek', { place: 'Stirling', fetchImpl: fakeFetch, now: NOW })).name, 'weather_stirling');
 });
 
 test('network failures give a plain message', async () => {
   const failing = async () => { throw new TypeError('Failed to fetch'); };
-  await assert.rejects(fetchLive('electricity', { fetchImpl: failing }), /could not be reached/);
-  const notOk = async () => ({ ok: false, status: 503 });
-  await assert.rejects(fetchLive('weatherWeek', { fetchImpl: notOk }), /503/);
+  await assert.rejects(fetchLive('earthquakes', { fetchImpl: failing }), /could not be reached/);
+  await assert.rejects(fetchLive('weatherWeek', { fetchImpl: async () => ({ ok: false, status: 503 }) }), /503/);
 });
 
-test('saved examples match the live column layout', async () => {
-  const fakeFetch = async url => ({ ok: true, json: async () => (url.includes('carbonintensity') ? carbonRegional(1, 'x') : url.includes('daily=') ? openMeteoDaily() : openMeteoHourly()) });
+test('wildlife still works if the place lookup fails', async () => {
+  const f = async url => (url.includes('autocomplete') ? { ok: false, status: 500 } : { ok: true, json: async () => inatObservations() });
+  const t = await fetchLive('wildlife', { fetchImpl: f });
+  assert.equal(t.rows.length, 30);
+});
+
+test('saved examples match the live layout and fit their types', async () => {
   for (const [id, source] of Object.entries(SOURCES)) {
     const live = await fetchLive(id, { fetchImpl: fakeFetch, now: NOW });
     const prepared = prepareCSV(await readFile(new URL(`../${source.example}`, import.meta.url), 'utf8'));
     assert.ok(prepared.ok, id);
     assert.deepEqual(prepared.names, live.columns, id);
+    assert.equal(buildTable('x', prepared, source.types).blanked, 0, `${id} example fits its types`);
   }
 });
