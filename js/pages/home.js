@@ -62,7 +62,7 @@ function render() {
     el('section', { class: 'panel mydata-callout' },
       el('div', {},
         el('h2', {}, 'Query your own data'),
-        el('p', {}, 'Load a CSV file — a class survey, sports results, anything with rows and columns — and explore it with the same editor. Your file stays on this device.')),
+        el('p', {}, 'Load a CSV file — a class survey, sports results, anything with rows and columns — or fetch live Scottish weather and electricity data, and explore it with the same editor.')),
       el('a', { class: 'btn btn-primary', href: 'mydata.html' }, 'Open My data')),
     el('section', { class: 'panel teacher' },
       el('h2', {}, 'For teachers'),

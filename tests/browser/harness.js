@@ -68,7 +68,7 @@ export function startServer(port = 8765) {
   return new Promise(resolve => server.listen(port, () => resolve(server)));
 }
 
-export async function launchBrowser({ width = 1280, height = 900 } = {}) {
+export async function launchBrowser({ width = 1280, height = 900, routes = {} } = {}) {
   const port = 9300 + Math.floor(Math.random() * 500);
   const chrome = spawn('google-chrome', [
     '--headless=new', '--no-sandbox', '--disable-gpu', `--remote-debugging-port=${port}`,
@@ -110,7 +110,17 @@ export async function launchBrowser({ width = 1280, height = 900 } = {}) {
       if (request.url.includes('sql-wasm.js')) {
         await s('Fetch.fulfillRequest', { requestId, responseCode: 200, responseHeaders: [{ name: 'content-type', value: 'text/javascript' }], body: Buffer.from(STUB).toString('base64') });
       } else {
-        await s('Fetch.failRequest', { requestId, errorReason: 'BlockedByClient' });
+        const key = Object.keys(routes).find(k => request.url.includes(k));
+        const body = key ? routes[key](request.url) : null;
+        if (body) {
+          await s('Fetch.fulfillRequest', {
+            requestId, responseCode: 200,
+            responseHeaders: [{ name: 'content-type', value: 'application/json' }, { name: 'access-control-allow-origin', value: '*' }],
+            body: Buffer.from(JSON.stringify(body)).toString('base64'),
+          });
+        } else {
+          await s('Fetch.failRequest', { requestId, errorReason: 'BlockedByClient' });
+        }
       }
     }
     if (msg.method === 'Runtime.exceptionThrown') consoleLog.push(`EXCEPTION ${msg.params.exceptionDetails.exception?.description || msg.params.exceptionDetails.text}`);
@@ -118,7 +128,7 @@ export async function launchBrowser({ width = 1280, height = 900 } = {}) {
       consoleLog.push(`${msg.params.type}: ${msg.params.args.map(a => a.value ?? a.description).join(' ')}`);
     }
   });
-  await s('Fetch.enable', { patterns: [{ urlPattern: '*cdnjs.cloudflare.com*' }, { urlPattern: '*fonts.googleapis.com*' }, { urlPattern: '*fonts.gstatic.com*' }] });
+  await s('Fetch.enable', { patterns: [{ urlPattern: '*cdnjs.cloudflare.com*' }, { urlPattern: '*fonts.googleapis.com*' }, { urlPattern: '*fonts.gstatic.com*' }, { urlPattern: '*api.open-meteo.com*' }, { urlPattern: '*api.carbonintensity.org.uk*' }] });
   await s('Runtime.enable');
   await s('Page.enable');
   await s('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: 1, mobile: width < 600 });
@@ -150,7 +160,15 @@ export async function launchBrowser({ width = 1280, height = 900 } = {}) {
       return r;
     },
     async click(selector) {
-      const { x, y } = await page.center(selector);
+      // Wait for any smooth scrolling to settle so the click lands where the element is.
+      let pos = await page.center(selector);
+      for (let i = 0; i < 20; i++) {
+        await new Promise(r => setTimeout(r, 60));
+        const next = await page.center(selector);
+        if (Math.abs(next.x - pos.x) < 1 && Math.abs(next.y - pos.y) < 1) break;
+        pos = next;
+      }
+      const { x, y } = pos;
       for (const type of ['mouseMoved', 'mousePressed', 'mouseReleased']) {
         await s('Input.dispatchMouseEvent', { type, x, y, button: 'left', clickCount: 1 });
       }
@@ -202,5 +220,6 @@ export async function launchBrowser({ width = 1280, height = 900 } = {}) {
       await writeFile(file, Buffer.from(data, 'base64'));
     },
   };
+  page.routes = routes;
   return { page, close: () => { ws.close(); chrome.kill(); } };
 }
